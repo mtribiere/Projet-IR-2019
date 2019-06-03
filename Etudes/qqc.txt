@@ -1,3 +1,7 @@
 Projet IR : Création de jeu agar.io-like
 
-Infos notables :	- Blue node : Grande Portée de vision, portée décente, n'intervient pas sur les brebis
+Infos notables :	- Blue node : Grand champ de vision, très rapide, Ne pousse pas
+	- Yellow node : Petit champ de vision, rapide, pousse au corps à corps
+	- Green node : champ de vision normal, décente, pousse normal
+	- Red node : Petit champ de vision, lent, pousse au corps à corps
+	- Cyan node : 
