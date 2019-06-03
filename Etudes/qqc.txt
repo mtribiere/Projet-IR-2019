@@ -1,7 +1,20 @@
-Projet IR : Création de jeu agar.io-like
+Projet IR : Creation de jeu agar.io-like
 
-Infos notables :	- Blue node : Grand champ de vision, très rapide, Ne pousse pas
-	- Yellow node : Petit champ de vision, rapide, pousse au corps à corps
-	- Green node : champ de vision normal, décente, pousse normal
-	- Red node : Petit champ de vision, lent, pousse au corps à corps
-	- Cyan node : 
+Infos notables :	- Blue node : Grand champ de vision, tres rapide, Ne pousse pas
+	- Yellow node : Petit champ de vision, rapide, pousse au corps a corps
+	- Green node : champ de vision normal, decente, pousse normal
+	- Red node : Petit champ de vision, lent, pousse au corps a corps
+	- Cyan node : unknown, lent, unknown
+	- Purple node : Bonne champ de vision vertical / Faible horizontal, normal, pousse assez proche
+
+
+Border value : 
+Position calcule a paritr du Top Left -> Bottom Right : 9000 Horizontal / 6000 Vertical
+
+Protocole
+
+n°64 : Position (node) par rapport au bord de la map 
+n°16 : Source Serveur : Update de position d'un node spécifique (toutes les infos)
+	Nickname color : Node de chien / Nickname BotX : Node de brebis
+n°16 Source Client : Position Souris (postion demandé)
+
