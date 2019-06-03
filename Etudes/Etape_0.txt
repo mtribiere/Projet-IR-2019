@@ -1,0 +1,39 @@
+9000
+6000
+X : 0  Y : 3000 rayon = 900
+
+Vitesse brebis : 15 
+
+Red : 6=>0,4 60 200 200 Vitesse très très lente (deuxième vitesse la plus lente), très faible vision, ne pousse que les brebis avec lesquelles il est en contact (moins de 100 unités de distance)
+
+Blue : 40=>2,66 0 2000 2000 Ne peut pas pousser les brebis mais grande visibilité
+
+Green : 20=>1,33 300 800 800 Caractéristiques moyennes partout, pas d'effet spécial
+
+Yellow : 30=>2 100 600 600 Grande vitesse mais ne pousse que les brebis avec lesquelles il est en contact (moins de 100 unités de distance)
+
+Cyan : 3=>0,2 300 600 600 Extrêmement lent (le plus lent de tous) mais grand rayon d'action
+
+Purple : 15=>1 100 400 1600 Grande visibilité verticale, faible visibilité horizontale, ne pousse que les brebis avec lesquelles il est en contact (moins de 100 unités de distance)
+
+Effet spécial quand brebis dans enclos :
+Red : Peut pousser les brebis hors de l'enclos 
+Blue : Ne peut pas pousser les brebis hors de l'enclos
+Green : Ne peut pas pousser les brebis hors de l'enclos
+Yellow : Ne peut pas pousser les brebis hors de l'enclos
+Cyan : Peut pousser les brebis hors de l'enclos
+Purple : Ne peut pas pousser les brebis hors de l'enclos
+
+Mouvement standard brebis dans enclos : Immobiles à des positions prédéfinies (ne changent pas même après reset). Lorsque les brebis se font pousser hors de l'enclos, elles "résistent" et essayent par tous les moyens de revenir à cette position prédéfinie.
+
+Mouvement brebis hors de l'enclos :
+Avec un chien : 
+	Si dans rayon d'action du chien :
+		Eloignement à vitesse constante
+		Si collision entre chien et brebis :
+			Brebis accélère et dévie de sa trajectoire pour éviter le chien (fais parfois demi-tour si le chien "traverse" la brebis)
+	Si dans rayon d'action de plusieurs chien :
+		Les deux éloignements sont calculés, l'éloignement se fait dans la direction moyenne des deux (vitesse idem)
+
+	Sinon immobile
+
