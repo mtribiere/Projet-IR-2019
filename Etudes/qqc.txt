@@ -13,8 +13,28 @@ Position calcule a paritr du Top Left -> Bottom Right : 9000 Horizontal / 6000 V
 
 Protocole
 
+n°255 : commande de connection (protocole 0)
+n°254 : commande de connection (protocole 13)
+n°0 : Envoi du Nickname (color)
+n°49 : Leadbord Information (Brebis et chiens)
 n°64 : Position (node) par rapport au bord de la map 
 n°16 : Source Serveur : Update de position d'un node spécifique (toutes les infos)
 	Nickname color : Node de chien / Nickname BotX : Node de brebis
 n°16 Source Client : Position Souris (postion demandé)
-
+n°32 : Attribution de l'ID au gens qui se connecte
+
+(Si 2 fois même infos dans le même paqet de message : sécurité (?))
+
+Pattern : 
+- Connection (protocole ?)
+- Envoi du Nickname
+- Envoi d'infos / Initialisation : 
+	- Taille de map
+	- Infos des brebis (nombre et noms (ID?))
+	- Attribution d'ID
+	- Spawn Random (Serveur donne les infos de positions de la node qui a pop)
+- Déroulement de partie :
+	- Envoi de postion de la souris (si rien au début, Position (0;0) par défaut
+	- Envoi la nouvelle position des nodes (chiens et brebis si elles bougent)
+	- Envoi infos de map
+- 
