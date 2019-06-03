@@ -4,7 +4,7 @@ Infos notables :	- Blue node : Grand champ de vision, tres rapide, Ne pousse pa
 	- Yellow node : Petit champ de vision, rapide, pousse au corps a corps
 	- Green node : champ de vision normal, decente, pousse normal
 	- Red node : Petit champ de vision, lent, pousse au corps a corps
-	- Cyan node : unknown, lent, unknown
+	- Cyan node : Champ de vision normal, très lent, pousse loin
 	- Purple node : Bonne champ de vision vertical / Faible horizontal, normal, pousse assez proche
 
 
@@ -37,4 +37,3 @@ Pattern :
 	- Envoi de postion de la souris (si rien au début, Position (0;0) par défaut
 	- Envoi la nouvelle position des nodes (chiens et brebis si elles bougent)
 	- Envoi infos de map
-- 
