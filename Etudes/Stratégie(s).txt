@@ -6,5 +6,37 @@ PRINCIPALE STRATEGIE ACTUELLE :
 1) Balayer EXHAUSTIVEMENT la zone juste autour de l'enclos pendant que d'autres éclaireurs vont plus loin
 	S'ils trouvent des brebis, ces éclaireurs ramènent les brebis vers le centre
 2) Lorsque fini, tous poussent les brebis du centre vers l'enclos 
+X) Eventuellement en laisser un bleu à la base pour savoir combien il manque de brebis :)
 
 => Faire une armée de Purple
+
+
+
+Transmettre des paquets au serveur (1 par chien) pour donner les ordres de déplacement vers des zones précises
+Pour chaque réponse du serveur :
+Pour les chiens prêts de l'enclos :
+	Regarder si une brebis est trouvée
+	Si oui :
+		On change la destination du chien vers (son rayon d'action) unités de distance derrrière la brebis 
+		Si cette destination est atteinte :
+			On indique à ce chien la destination de l'enclos JUDICIEUSEMENT calculée pour pouvoir ramener la brebis
+			Une fois la brebis ramenée à la base, le chien reprend la destination clé indiquée 
+	Si non :
+		On continue vers la même destination
+	Si aucune brebis trouvée : on indique une autre destination clé et on recommence l'algorithme 
+
+Dans algorithme : faire une liste des zones potentielles (initialisée à toute la map)
+Lorsque une destination clé est atteinte sans rencontrer de brebis, enlever cette zone de la map puis passer à la destination suivante
+
+L'algorithme continue jusqu'à ce que :
+	- Toutes les destinations clé aient été atteintes
+	- Le(s) chien(s) bleu(s) resté(s) à la base comptent dix (ou x) brebis 
+
+
+Pour les chiens loin de l'enclos :
+Idem mais la destination vers laquelle les brebis sont emmenées est le centre de la map
+Lorsque la somme des brebis vues au centre et dans l'enclos est égale à 10 (ou x), grouper les actions des chiens pour ramener toutes les brebis d'un coup du centre vers l'enclos 
+
+IDEE IMPORTANTE : plutôt que de garder des "observateurs" (chiens bleus à la base) pour compter les brebis dans l'enclos : 
+Y laisser un ou deux violets parmi les chiens qui agissaient prêt de l'enclos lorsque la mission de ceci est terminée
+
