@@ -1,0 +1,3 @@
+Projet IR : Création de jeu agar.io-like
+
+Infos notables :	- Blue node : Grande Portée de vision, portée décente, n'intervient pas sur les brebis
