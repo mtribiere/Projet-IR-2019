@@ -10,6 +10,8 @@
 
 #include "client.h"
 #include "packets.h"
+#include "networkAssistant.h"
+#include "dog.h"
 
 // compile with gcc -Wall -g -o sock ./test-client.c -lwebsockets
 
@@ -64,20 +66,35 @@ int sendCommand(struct lws *wsi,unsigned char *buf,unsigned int len)
 	lws_callback_on_writable(wsi);
 	return 1;
 }
+
 /**
 \Recevoir un message
 ********************************************************/
 int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 
-		int offset = 0;
 		//Si le message recu est une mise a jour de position
 		if(buff[0] == 16){
-			 while
+				//Definir le nombre d'entité aux alentours
+				numberOfEntity = getSizeOfPositionPacket(buff+3,len)-1;
+				printf("Nombre d'entité : %d\n",numberOfEntity);
+
+				//Récuper leurs infos et les convertir en struct
+				for(int i = 0;i<numberOfEntity;i++){
+					//Declarer le struct
+					Entity tmp;
+
+					//Convertir les valeurs
+					tmp.ID = getIDFromPositionPacket(buff+3,len,i);
+
+					printf("Entite %d ID : %d\n",i,tmp.ID);
+				}
 		}
 
+		printf("\n\n");
 
 	return 0;
 }
+
 
 
 /****************************************************************************************************************************/
