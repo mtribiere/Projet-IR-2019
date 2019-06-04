@@ -1,2 +1,2 @@
 all :
-	gcc -Wall -g -o sock ./test-client.c -lwebsockets
+	gcc -Wall -std=gnu99 -g -o sock ./test-client.c -lwebsockets

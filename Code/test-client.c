@@ -9,6 +9,7 @@
 
 
 #include "client.h"
+#include "packets.h"
 
 // compile with gcc -Wall -g -o sock ./test-client.c -lwebsockets
 
@@ -63,6 +64,20 @@ int sendCommand(struct lws *wsi,unsigned char *buf,unsigned int len)
 	lws_callback_on_writable(wsi);
 	return 1;
 }
+/**
+\Recevoir un message
+********************************************************/
+int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
+
+		int offset = 0;
+		//Si le message recu est une mise a jour de position
+		if(buff[0] == 16){
+			 while
+		}
+
+
+	return 0;
+}
 
 
 /****************************************************************************************************************************/
@@ -87,15 +102,18 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 	static unsigned int offset=0;
 	static unsigned char rbuf[MAXLEN];
 
-	printf("Boucle de retour : %d\n",reason);
-
 	switch (reason) {
 	case LWS_CALLBACK_CLIENT_ESTABLISHED:
 		lwsl_notice("ogar: LWS_CALLBACK_CLIENT_ESTABLISHED\n");
-		unsigned char nickname[] = {16,
-																00,01,00,00,
-																00,01,00,00};
+
+		//Envoi des packets de start
+//		unsigned char position[] = {16,
+	//															232,03,00,00,
+		//														232,03,00,00};
+		sendCommand(wsi,connectionStart1,sizeof(connectionStart1));
+		sendCommand(wsi,connectionStart2,sizeof(connectionStart2));
 		sendCommand(wsi,nickname,sizeof(nickname));
+	//sendCommand(wsi,position,sizeof(position));
 		break;
 
  	case LWS_CALLBACK_CLIENT_WRITEABLE:
@@ -111,6 +129,7 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 			// we have receive some data, check with websocket API if this is a final fragment
 			if (lws_is_final_fragment(wsi)) {
 				// call recv function here
+				messageReceived(wsi,rbuf,MAXLEN);
 				offset=0;
 			}
 		} else {	// length is too long... get others but ignore them...
@@ -138,7 +157,7 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 		break;
 	}
 
-	writePacket(wsi);
+
 	return 0;
 }
 
