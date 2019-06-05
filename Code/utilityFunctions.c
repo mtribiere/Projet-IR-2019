@@ -8,7 +8,8 @@
 //#include <unistd.h>
 #include <math.h>
 
-#include "utilityFunctions.h"
+//#include "test-client.c"
+//#include "client.h"
 
 #define LONGUEUR 9000
 #define LARGEUR 6000
@@ -127,6 +128,11 @@ unsigned int* position_creator(unsigned char* packet)
         return position;
 }
 
+/*
+unsigned int* 
+{
+}
+*/
 
 void print_packet(unsigned char* packet)
 {
@@ -215,7 +221,7 @@ unsigned int* position_calculator_aux_1(int rayon, unsigned int* position_brebis
 unsigned int* position_calculator_aux_2(int rayon, unsigned int* position_brebis)
 {
         unsigned int x_position_aimed, y_position_aimed;
-        unsigned int* position_aimed;
+        unsigned int* position_aimed=malloc(2*sizeof(unsigned int));
 	int i;
 
         //Stratégie de base
@@ -243,7 +249,7 @@ unsigned int* position_calculator_aux_2(int rayon, unsigned int* position_brebis
 unsigned int* position_calculator_aux_3(int rayon, unsigned int* position_brebis)
 {
         unsigned int x_position_aimed, y_position_aimed;
-        unsigned int* position_aimed;
+        unsigned int* position_aimed=malloc(2*sizeof(unsigned int));
 	int i;
 
         //Stratégie de base
@@ -272,7 +278,7 @@ unsigned int* position_calculator(int rayon, unsigned int* position_brebis)
 {
         unsigned int x_position_aimed, y_position_aimed;
 	float coefficient;
-        unsigned int* position_aimed;
+        unsigned int* position_aimed=malloc(2*sizeof(unsigned int));
 	int i;
 
 	coefficient=position_brebis[2]/position_brebis[1];
