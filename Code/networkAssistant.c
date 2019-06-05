@@ -68,7 +68,7 @@ int getIDFromPositionPacket(unsigned char *buff,size_t len,int id){
 \Permet de recuprer le position en X d'une entité
 **********************/
 
-int getPosFromPositionPacket(unsigned char *buff,size_t len,int id){
+int* getPosFromPositionPacket(unsigned char *buff,size_t len,int id){
 		int offset = 0;
 		int counter = 0;
 		int toReturn;
@@ -86,9 +86,10 @@ int getPosFromPositionPacket(unsigned char *buff,size_t len,int id){
 
 		}
 
-		//Prendre la position en x
-		printf("X : %d %d %d %d ; ",buff[offset+4],buff[offset+5],buff[offset+6],buff[offset+7]);
-		printf("Y : %d %d %d %d\n",buff[offset+8],buff[offset+9],buff[offset+10],buff[offset+11]);
-		return 0;
+		//Prendre la position
+		unsigned char pos[] = {buff[offset+4],buff[offset+5],buff[offset+6],buff[offset+7],buff[offset+8],buff[offset+9],buff[offset+10],buff[offset+11]};
+
+		//Retourner la valeur converti
+		return position_creator(pos);
 
 }

@@ -1,5 +1,5 @@
-sock : main.o networkAssistant.o
-	gcc -Wall -lm -o $@ main.o networkAssistant.o -lwebsockets
+sock : main.o networkAssistant.o utilityFunctions.o
+	gcc -Wall -lm -o $@ main.o networkAssistant.o utilityFunctions.o -lwebsockets
 
 main.o: main.c
 	gcc -Wall -std=gnu99 -g -c $^
@@ -7,6 +7,8 @@ main.o: main.c
 networkAssistant.o : networkAssistant.c
 	gcc -Wall -std=gnu99 -g -c $^
 
+utilityFunctions.o : utilityFunctions.c
+		gcc -Wall -std=gnu99 -g -c $^
 
 clean:
 	rm -r *.o

@@ -18,18 +18,15 @@
 void print_packet(unsigned char* packet);
 void print_position(unsigned int* position);
 
-typedef struct 
+
 
 
 // CHANGER TOUS LES INT EN UNSIGNED INT
 
 //On prend en argument trois nombres dont deux non limités à 256
 //On veut retourner tableau contenant le premier nombre et la décomposition en hexadécimal des deux autres nombres
-unsigned char* packet_creator(struct entity Entity)
+unsigned char* packet_creator(unsigned int x_position,unsigned int y_position)
 {
-	unsigned int x_position=Entity->positionX;
-	unsigned int y_position=Entity->positionY;
-
 	unsigned char* packet=malloc(8*sizeof(unsigned char));
 
 	int i;
@@ -333,7 +330,7 @@ unsigned int* position_calculator(int rayon, unsigned int* position_brebis)
 }
 
 
-
+/*
 int main(void)
 {
 	unsigned char* paquet1;
@@ -368,3 +365,4 @@ int main(void)
 	return 1;
 }
 
+*/
