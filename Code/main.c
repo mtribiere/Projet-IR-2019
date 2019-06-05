@@ -7,7 +7,6 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-
 #include "client.h"
 #include "packets.h"
 #include "networkAssistant.h"

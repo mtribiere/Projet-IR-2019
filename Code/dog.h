@@ -1,3 +1,6 @@
+#ifndef DOG
+#define DOG
+
 typedef struct dog_infos {
   unsigned char position[2];
   unsigned char ID;
@@ -18,3 +21,5 @@ int Ymax = 6000;
 //valeurs modifiables en fonction de la taille de la map
 
 //int center_cage[] = {0, Ymax/2};
+
+#endif

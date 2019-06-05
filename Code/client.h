@@ -1,3 +1,7 @@
+#ifndef CLIENT
+#define CLIENT
+
+
 #include "libwebsockets.h"
 #define MAXLEN 20000
 #define MAXENTITY 2000
@@ -25,3 +29,5 @@ struct lws_protocols protocols[] = {
 };
 
 static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
+
+#endif
