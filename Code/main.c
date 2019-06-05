@@ -10,6 +10,7 @@
 #include "client.h"
 #include "packets.h"
 #include "networkAssistant.h"
+#include "utilityFunctions.h"
 #include "dog.h"
 
 // compile with gcc -Wall -g -o sock ./test-client.c -lwebsockets
@@ -74,6 +75,7 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 		//Si le message recu est une mise a jour de position
 		if(buff[0] == 16){
 
+			////////////Mettre a jour les entité presentes
 				//Definir le nombre d'entité aux alentours
 				numberOfEntity = getSizeOfPositionPacket(buff+3,len)-1;
 				printf("Nombre d'entité : %d\n",numberOfEntity);
@@ -91,9 +93,24 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 					tmp.positionX = pos[0];
 					tmp.positionY = pos[1];
 
+					//Ajouter l'entité au tableau
+					entityAround[i] = tmp;
 
-					printf("Entite %d ID : %d ; Position = (%d;%d) \n",i,tmp.ID,tmp.positionX,tmp.positionY);
+					//DEBUG
+					printf("Entite %d ID : %d ; Position = (%d;%d) \n",i,entityAround[i].ID,entityAround[i].positionX,entityAround[i].positionY);
 
+				}
+
+				////////////Mettre a jour notre position
+				unsigned int *posCurrent = getPosFromPositionPacket(buff+3,len,numberOfEntity);
+				currentPositionX = posCurrent[0];
+				currentPositionY = posCurrent[1];
+
+				///////////Envoyer un packet de position
+				//Si on doit bouger
+				if(targetPositionX != 0 && targetPositionY != 0){
+					unsigned char* toSendPacket = packet_creator_completed(packet_creator(targetPositionX,targetPositionY));
+					sendCommand(wsi,toSendPacket,sizeof(toSendPacket));
 				}
 		}
 

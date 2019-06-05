@@ -65,7 +65,7 @@ int getIDFromPositionPacket(unsigned char *buff,size_t len,int id){
 
 
 /*********************
-\Permet de recuprer le position en X d'une entité
+\Permet de recuprer la position d'une entité dans un packet (16)
 **********************/
 
 unsigned int* getPosFromPositionPacket(unsigned char *buff,size_t len,int id){

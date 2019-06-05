@@ -1,18 +1,19 @@
 #ifndef DOG
 #define DOG
 
-typedef struct dog_infos {
-  unsigned int positionX;
-  unsigned int positionY;
-  unsigned int ID;
-  unsigned char nickname[];
-} dog;
-
 typedef struct entity {
   unsigned int positionX;
   unsigned int positionY;
   unsigned int ID;
 } Entity;
+
+unsigned int currentPositionX;
+unsigned int currentPositionY;
+unsigned int ID;
+unsigned char nickname[];
+
+unsigned int targetPositionX = 1000;
+unsigned int targetPositionY = 1000;
 
 Entity entityAround[MAXENTITY];
 int numberOfEntity = 0;

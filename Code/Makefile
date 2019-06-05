@@ -10,6 +10,10 @@ networkAssistant.o : networkAssistant.c
 utilityFunctions.o : utilityFunctions.c
 		gcc -Wall -std=gnu99 -g -c $^
 
+test: sock
+	gnome-terminal -e "./sock -p 2001 -o agar.io 192.168.130.114"
+
+
 clean:
 	rm -r *.o
 	rm -r sock

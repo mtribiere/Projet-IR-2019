@@ -86,7 +86,7 @@ unsigned char* packet_creator(unsigned int x_position,unsigned int y_position)
 
 unsigned char* packet_creator_completed(unsigned char* packet)
 {
-        unsigned char* packet_completed=malloc(9*sizeof(unsigned char));
+        unsigned char* packet_completed=malloc(13*sizeof(unsigned char));
 	int i;
 
 	packet_completed[0]=16;
@@ -94,7 +94,11 @@ unsigned char* packet_creator_completed(unsigned char* packet)
         {
                 packet_completed[i]=packet[i-1];
         }
-        return packet_completed;
+	for (i=9;i<13;i++)
+	{
+		packet_completed[i]=00;
+	}
+  			return packet_completed;
 }
 
 
