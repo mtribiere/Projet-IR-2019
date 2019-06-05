@@ -84,6 +84,19 @@ unsigned char* packet_creator(unsigned int x_position,unsigned int y_position)
 	return packet;
 }
 
+unsigned char* packet_creator_completed(unsigned char* packet)
+{
+        unsigned char* packet_completed=malloc(9*sizeof(unsigned char));
+	int i;
+
+	packet_completed[0]=16;
+	for (i=1;i<9;i++)
+        {
+                packet_completed[i]=packet[i-1];
+        }
+        return packet_completed;
+}
+
 
 //FAIRE UNE FONCTION POUR TRANSFORMER TOUS LES Xi ET Yi EN HEXADECIMAL => PAQUET PRET A L ENVOI
 
@@ -128,25 +141,20 @@ unsigned int* position_creator(unsigned char* packet)
         return position;
 }
 
-/*
-unsigned int* 
-{
-}
-*/
 
 void print_packet(unsigned char* packet)
 {
-	int i;
-	for (i=0;i<4;i++)
-	{
-		printf("%d ",packet[i]);
-	}
-	printf("\n");
-	for (i=4;i<8;i++)
+        int i;
+        for (i=0;i<4;i++)
         {
                 printf("%d ",packet[i]);
         }
-	printf("\n");
+        printf("\n");
+        for (i=4;i<8;i++)
+        {
+                printf("%d ",packet[i]);
+        }
+        printf("\n");
 }
 
 
