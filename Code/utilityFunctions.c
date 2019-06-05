@@ -1,14 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include <getopt.h>
-//#include <string.h>
-//#include <signal.h>
-//#include <syslog.h>
-//#include <sys/time.h>
-//#include <unistd.h>
-
-//#include "test-client.c"
-//#include "client.h"
 
 void print_packet(unsigned char* packet);
 void print_position(int* position);
@@ -145,7 +136,7 @@ void print_position(int* position)
 
 
 
-
+/*
 int main(void)
 {
 	unsigned char* paquet1;
@@ -178,5 +169,4 @@ int main(void)
 
 	printf("\n");
 	return 1;
-}
-
+}*/

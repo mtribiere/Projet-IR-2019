@@ -9,6 +9,7 @@
 
 
 #include "networkAssistant.h"
+#include "utilityFunctions.h"
 
 /**
 \Permet de detecter la taille d'un paquet de position
@@ -66,3 +67,28 @@ int getIDFromPositionPacket(unsigned char *buff,size_t len,int id){
 /*********************
 \Permet de recuprer le position en X d'une entité
 **********************/
+
+int getXPosFromPositionPacket(unsigned char *buff,size_t len,int id){
+		int offset = 0;
+		int counter = 0;
+		int toReturn;
+
+		//Tant qu'on a pas atteint la fin du paquet
+		while(buff[offset] != 0 && counter != id){
+
+			//Se deplacer avant le nickname
+			offset+=17;
+
+			//Se deplacer après le nickname (le paquet suivant)
+			while(buff[offset] != 0) offset++;
+			offset++;
+			counter++;
+
+		}
+
+		//Prendre la position en x
+		printf("X : %d %d %d %d\n",buff[offset+4],buff[offset+5],buff[offset+6],buff[offset+7]);
+
+		return 0;
+
+}

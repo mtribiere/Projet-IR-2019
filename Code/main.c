@@ -85,7 +85,8 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 					//Convertir les valeurs
 					tmp.ID = getIDFromPositionPacket(buff+3,len,i);
 
-					printf("Entite %d ID : %d\n",i,tmp.ID);
+					printf("Entite %d ID : %d ; ",i,tmp.ID);
+					getXPosFromPositionPacket(buff+3,len,i);
 				}
 		}
 
