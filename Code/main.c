@@ -73,6 +73,7 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 
 		//Si le message recu est une mise a jour de position
 		if(buff[0] == 16){
+			
 				//Definir le nombre d'entité aux alentours
 				numberOfEntity = getSizeOfPositionPacket(buff+3,len)-1;
 				printf("Nombre d'entité : %d\n",numberOfEntity);
@@ -86,7 +87,7 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 					tmp.ID = getIDFromPositionPacket(buff+3,len,i);
 
 					printf("Entite %d ID : %d ; ",i,tmp.ID);
-					getXPosFromPositionPacket(buff+3,len,i);
+					getPosFromPositionPacket(buff+3,len,i);
 				}
 		}
 
