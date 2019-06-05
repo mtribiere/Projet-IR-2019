@@ -98,7 +98,7 @@ unsigned char* packet_creator_completed(unsigned char* packet)
 	{
 		packet_completed[i]=00;
 	}
-  			return packet_completed;
+        return packet_completed;
 }
 
 
@@ -158,13 +158,35 @@ void print_packet(unsigned char* packet)
         {
                 printf("%d ",packet[i]);
         }
-        printf("\n");
+        printf("\n\n");
 }
+
+void print_packet_completed(unsigned char* packet)
+{
+        int i=0;
+	printf("%d \n",packet[0]);
+        for (i=1;i<5;i++)
+        {
+                printf("%d ",packet[i]);
+        }
+        printf("\n");
+        for (i=5;i<9;i++)
+        {
+                printf("%d ",packet[i]);
+        }
+        printf("\n");
+	for (i=9;i<13;i++)
+        {
+                printf("%d ",packet[i]);
+        }
+        printf("\n\n");
+}
+
 
 
 void print_position(unsigned int* position)
 {
-	printf("%d %d\n",position[1],position[2]);
+	printf("%d %d\n\n",position[1],position[2]);
 }
 
 
@@ -362,6 +384,13 @@ int main(void)
 	print_packet(paquet1);
 	print_packet(paquet2);
 
+	paquet1=packet_creator_completed(paquet1);
+        paquet2=packet_creator_completed(paquet2);
+        printf("\n\n\n\n");
+        print_packet_completed(paquet1);
+        print_packet_completed(paquet2);
+	printf("\n\n\n\n");
+
 	paquet1[0]=10;
 	paquet1[1]=1;
 	paquet1[2]=0;
@@ -381,5 +410,4 @@ int main(void)
 	printf("\n");
 	return 1;
 }
-
 */
