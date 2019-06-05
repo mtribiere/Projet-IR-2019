@@ -10,5 +10,4 @@ networkAssistant.o : networkAssistant.c
 
 clean:
 	rm -r *.o
-	rm -r *.gch
 	rm -r sock
