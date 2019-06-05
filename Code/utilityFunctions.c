@@ -8,8 +8,7 @@
 //#include <unistd.h>
 #include <math.h>
 
-//#include "test-client.c"
-//#include "client.h"
+#include "utilityFunctions.h"
 
 #define LONGUEUR 9000
 #define LARGEUR 6000

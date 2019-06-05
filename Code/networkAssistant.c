@@ -68,10 +68,9 @@ int getIDFromPositionPacket(unsigned char *buff,size_t len,int id){
 \Permet de recuprer le position en X d'une entité
 **********************/
 
-int* getPosFromPositionPacket(unsigned char *buff,size_t len,int id){
+unsigned int* getPosFromPositionPacket(unsigned char *buff,size_t len,int id){
 		int offset = 0;
 		int counter = 0;
-		int toReturn;
 
 		//Tant qu'on a pas atteint la fin du paquet
 		while(buff[offset] != 0 && counter != id){

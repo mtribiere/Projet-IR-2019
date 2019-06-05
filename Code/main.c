@@ -87,7 +87,7 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 					tmp.ID = getIDFromPositionPacket(buff+3,len,i);
 
 					//Recuperer la position
-					int *pos = getPosFromPositionPacket(buff+3,len,i);
+					unsigned int *pos = getPosFromPositionPacket(buff+3,len,i);
 					tmp.positionX = pos[0];
 					tmp.positionY = pos[1];
 
