@@ -2,8 +2,9 @@
 #define DOG
 
 typedef struct dog_infos {
-  unsigned char position[2];
-  unsigned char ID;
+  unsigned int positionX;
+  unsigned int positionY;
+  unsigned int ID;
   unsigned char nickname[];
 } dog;
 

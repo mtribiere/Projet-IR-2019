@@ -4,9 +4,11 @@ sock : main.o networkAssistant.o
 main.o: main.c
 	gcc -Wall -std=gnu99 -g -c $^
 
-networkAssistant.o : networkAssistant.c networkAssistant.h
+networkAssistant.o : networkAssistant.c
 	gcc -Wall -std=gnu99 -g -c $^
 
 
 clean:
 	rm -r *.o
+	rm -r *.gch
+	rm -r sock

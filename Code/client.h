@@ -16,9 +16,6 @@ typedef struct s_packet {
         struct s_packet *next;
 } t_packet;
 
-int currentPositionX = 0;
-int currentPositionY = 0;
-
 /// Pointer on the list of packet to be send when socket is writeable
 t_packet *packetList=NULL;
 
