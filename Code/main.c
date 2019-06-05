@@ -106,11 +106,15 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 				currentPositionX = posCurrent[0];
 				currentPositionY = posCurrent[1];
 
+				printf("Dog Position : (%d;%d)\n",currentPositionX,currentPositionY);
+
 				///////////Envoyer un packet de position
 				//Si on doit bouger
 				if(targetPositionX != 0 && targetPositionY != 0){
+
 					unsigned char* toSendPacket = packet_creator_completed(packet_creator(targetPositionX,targetPositionY));
-					sendCommand(wsi,toSendPacket,sizeof(toSendPacket));
+
+					sendCommand(wsi,toSendPacket,13);
 				}
 		}
 

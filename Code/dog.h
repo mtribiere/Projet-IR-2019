@@ -7,8 +7,8 @@ typedef struct entity {
   unsigned int ID;
 } Entity;
 
-unsigned int currentPositionX;
-unsigned int currentPositionY;
+unsigned int currentPositionX = 0;
+unsigned int currentPositionY = 0;
 unsigned int ID;
 unsigned char nickname[];
 
