@@ -10,6 +10,8 @@
 #include "client.h"
 #include "packets.h"
 #include "dog.h"
+#include "entity.h"
+#include "brain.h"
 #include "networkAssistant.h"
 #include "utilityFunctions.h"
 
@@ -103,18 +105,21 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 
 				////////////Mettre a jour notre position
 				unsigned int *posCurrent = getPosFromPositionPacket(buff+3,len,numberOfEntity);
-				currentPositionX = posCurrent[0];
-				currentPositionY = posCurrent[1];
+				dogInfos.entity.positionX = posCurrent[0];
+				dogInfos.entity.positionY = posCurrent[1];
 
-				printf("Dog Position : (%d;%d)\n",currentPositionX,currentPositionY);
+				printf("Dog Position : (%d;%d)\n",dogInfos.entity.positionX,dogInfos.entity.positionY);
+
+				///////////Calculer la strategie
+				computeStrategy(&dogInfos,entityAround,numberOfEntity);
 
 				///////////Envoyer un packet de position
 				//Si on doit bouger
-				if(targetPositionX != 0 && targetPositionY != 0){
+				if(dogInfos.targetPositionX != 0 && dogInfos.targetPositionY != 0){
 
-					unsigned char* toSendPacket = packet_creator_completed(packet_creator(targetPositionX,targetPositionY));
-
+					unsigned char* toSendPacket = packet_creator_completed(packet_creator(dogInfos.targetPositionX,dogInfos.targetPositionY));
 					sendCommand(wsi,toSendPacket,13);
+					
 				}
 		}
 
@@ -153,8 +158,8 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 
 		sendCommand(wsi,connectionStart1,sizeof(connectionStart1));
 		sendCommand(wsi,connectionStart2,sizeof(connectionStart2));
-		sendCommand(wsi,nickname,sizeof(nickname));
-	//sendCommand(wsi,position,sizeof(position));
+		sendCommand(wsi,dogInfos.entity.nickname,6);
+		//sendCommand(wsi,position,sizeof(position));
 		break;
 
  	case LWS_CALLBACK_CLIENT_WRITEABLE:
@@ -205,6 +210,16 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 /****************************************************************************************************************************/
 int main(int argc, char **argv)
 {
+
+	//Initialisation des variables
+	dogInfos.entity.positionX = 0;
+	dogInfos.entity.positionY = 0;
+	dogInfos.entity.nickname = blue;
+	dogInfos.targetPositionX = 1000;
+	dogInfos.targetPositionY = 1000;
+
+	numberOfEntity = 0;
+
 	int n = 0;
 
 	struct lws_context_creation_info info;

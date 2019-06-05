@@ -1,5 +1,5 @@
-sock : main.o networkAssistant.o utilityFunctions.o
-	gcc -Wall -lm -std=gnu99 -o $@ networkAssistant.o utilityFunctions.o main.o -lwebsockets
+sock : main.o brain.o networkAssistant.o utilityFunctions.o
+	gcc -Wall -lm -std=gnu99 -o $@  main.o brain.o networkAssistant.o utilityFunctions.o -lwebsockets
 
 main.o: main.c
 	gcc -Wall -std=gnu99 -g -c $^
@@ -16,6 +16,8 @@ brain.o: brain.c
 test: sock
 	./sock -p 2001 -o agar.io 192.168.130.114
 
+local: sock
+	./sock -p 1443 -o agar.io 127.0.0.1
 
 clean:
 	rm -r *.o

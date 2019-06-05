@@ -1,6 +1,10 @@
 #ifndef BRAIN
 #define BRAIN
 
-void computeStrategy();
+#include <sys/time.h>
+
+#include "entity.h"
+
+void computeStrategy(Dog *dogInfos,Entity *entityAround,int numberOfEntity);
 
 #endif

@@ -9,7 +9,7 @@
 #include <math.h>
 
 #include "utilityFunctions.h"
-#include "dog.h"
+#include "map.h"
 // A INITIALISER DANS UNE FONCTION AU DEBUT DE LA PARTIE
 
 void print_packet(unsigned char* packet);

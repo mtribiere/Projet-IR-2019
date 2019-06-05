@@ -7,21 +7,21 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-#include "brain.h"
-#include "dog.h"
+#include "entity.h"
+#include "map.h"
 
 /**************************
 \Calcule la strategie (Déplacements aléatoires)
 ***************************/
-void computeStrategy(){
+void computeStrategy(Dog *dogInfos,Entity *entityAround,int numberOfEntity){
 
   //Si on a atteint la destination
-  if(currentPositionX == targetPositionX && currentPositionY == targetPositionY){
+  if((dogInfos->entity).positionX == dogInfos->targetPositionX && (dogInfos->entity).positionY == dogInfos->targetPositionY){
 
     srandom(time(NULL));
 
-    targetPositionX = (rand()%MAP_SIZE_X);
-    targetPositionY = (rand()%MAP_SIZE_Y);
+    dogInfos->targetPositionX = (rand()%MAP_SIZE_X);
+    dogInfos->targetPositionY = (rand()%MAP_SIZE_Y);
   }
 
 }
