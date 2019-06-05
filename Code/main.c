@@ -9,9 +9,9 @@
 
 #include "client.h"
 #include "packets.h"
+#include "dog.h"
 #include "networkAssistant.h"
 #include "utilityFunctions.h"
-#include "dog.h"
 
 // compile with gcc -Wall -g -o sock ./test-client.c -lwebsockets
 
@@ -77,7 +77,7 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 
 			////////////Mettre a jour les entité presentes
 				//Definir le nombre d'entité aux alentours
-				numberOfEntity = getSizeOfPositionPacket(buff+3,len)-1;
+				numberOfEntity = getSizeFromPositionPacket(buff+3,len)-1;
 				printf("Nombre d'entité : %d\n",numberOfEntity);
 
 				//Récuper leurs infos et les convertir en struct
@@ -151,10 +151,6 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 	case LWS_CALLBACK_CLIENT_ESTABLISHED:
 		lwsl_notice("ogar: LWS_CALLBACK_CLIENT_ESTABLISHED\n");
 
-		//Envoi des packets de start
-//		unsigned char position[] = {16,
-	//															232,03,00,00,
-		//														232,03,00,00};
 		sendCommand(wsi,connectionStart1,sizeof(connectionStart1));
 		sendCommand(wsi,connectionStart2,sizeof(connectionStart2));
 		sendCommand(wsi,nickname,sizeof(nickname));
@@ -245,8 +241,6 @@ int main(int argc, char **argv)
 			goto usage;
 		}
 	}
-
-	srandom(time(NULL));
 
 	if (optind >= argc)
 		goto usage;

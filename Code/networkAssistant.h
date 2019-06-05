@@ -10,7 +10,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-int getSizeOfPositionPacket(unsigned char *buff,size_t len);
+int getSizeFromPositionPacket(unsigned char *buff,size_t len);
 int getIDFromPositionPacket(unsigned char *buff,size_t len,int id);
 unsigned int *getPosFromPositionPacket(unsigned char *buff,size_t len,int id);
 

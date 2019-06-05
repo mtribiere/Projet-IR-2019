@@ -8,18 +8,12 @@
 //#include <unistd.h>
 #include <math.h>
 
-//#include "test-client.c"
-//#include "client.h"
-
-#define LONGUEUR 9000
-#define LARGEUR 6000
+#include "utilityFunctions.h"
+#include "dog.h"
 // A INITIALISER DANS UNE FONCTION AU DEBUT DE LA PARTIE
 
 void print_packet(unsigned char* packet);
 void print_position(unsigned int* position);
-
-
-
 
 // CHANGER TOUS LES INT EN UNSIGNED INT
 
@@ -231,12 +225,12 @@ unsigned int* position_calculator_aux_1(int rayon, unsigned int* position_brebis
 	int i;
 
 	//Stratégie de base
-	if(position_brebis[2]<=LARGEUR/2)
+	if(position_brebis[2]<=MAP_SIZE_Y/2)
 	{
 		x_position_aimed=position_brebis[1];
 		y_position_aimed=position_brebis[2]+(rayon+1);
 	}
-	else if(position_brebis[2]>LARGEUR/2)
+	else if(position_brebis[2]>MAP_SIZE_Y/2)
         {
                 x_position_aimed=position_brebis[1];
                 y_position_aimed=position_brebis[2]-(rayon+1);
@@ -259,12 +253,12 @@ unsigned int* position_calculator_aux_2(int rayon, unsigned int* position_brebis
 	int i;
 
         //Stratégie de base
-        if(position_brebis[2]<=LARGEUR/2)
+        if(position_brebis[2]<=MAP_SIZE_Y/2)
         {
                 x_position_aimed=position_brebis[1]+(rayon+1);
                 y_position_aimed=position_brebis[2]+(rayon+1);
         }
-        else if(position_brebis[2]>LARGEUR/2)
+        else if(position_brebis[2]>MAP_SIZE_Y/2)
         {
                 x_position_aimed=position_brebis[1]+(rayon+1);
                 y_position_aimed=position_brebis[2]-(rayon+1);
@@ -287,12 +281,12 @@ unsigned int* position_calculator_aux_3(int rayon, unsigned int* position_brebis
 	int i;
 
         //Stratégie de base
-        if(position_brebis[2]<=LARGEUR/2)
+        if(position_brebis[2]<=MAP_SIZE_Y/2)
         {
                 x_position_aimed=position_brebis[1]+(rayon+1);
                 y_position_aimed=position_brebis[2]-(rayon+1);
         }
-        else if(position_brebis[2]>LARGEUR/2)
+        else if(position_brebis[2]>MAP_SIZE_Y/2)
         {
                 x_position_aimed=position_brebis[1]+(rayon+1);
                 y_position_aimed=position_brebis[2]+(rayon+1);
@@ -325,12 +319,12 @@ unsigned int* position_calculator(int rayon, unsigned int* position_brebis)
 
 
         //Stratégie de base
-        if(position_brebis[2]<=LARGEUR/2)
+        if(position_brebis[2]<=MAP_SIZE_Y/2)
         {
                 x_position_aimed=position_brebis[1]+sqrt((rayon+1)/(1+coefficient*coefficient));
                 y_position_aimed=position_brebis[2]-coefficient*sqrt((rayon+1)/(1+coefficient*coefficient));
         }
-        else if(position_brebis[2]>LARGEUR/2)
+        else if(position_brebis[2]>MAP_SIZE_Y/2)
         {
                 x_position_aimed=position_brebis[1]+sqrt((rayon+1)/(1+coefficient*coefficient));
                 y_position_aimed=position_brebis[2]+coefficient*sqrt((rayon+1)/(1+coefficient*coefficient));

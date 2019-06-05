@@ -14,7 +14,7 @@
 /**
 \Permet de detecter la taille d'un paquet de position
 *******************************************/
-int getSizeOfPositionPacket(unsigned char *buff,size_t len){
+int getSizeFromPositionPacket(unsigned char *buff,size_t len){
 	int sizeToReturn = 0;
 	int offset = 0;
 
