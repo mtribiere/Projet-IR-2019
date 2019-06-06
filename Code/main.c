@@ -113,7 +113,7 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 				dogInfos.entity.positionY = posCurrent[1];
 
 				printf("Dog %d Position : (%d;%d)\n",dogInfos.entity.ID,dogInfos.entity.positionX,dogInfos.entity.positionY);
-
+				printf("Dog %d Target :   (%d;%d)\n",dogInfos.entity.ID,dogInfos.targetPositionX,dogInfos.targetPositionY);
 				///////////Calculer la strategie
 				computeStrategy(&dogInfos,entityAround,numberOfEntity);
 
