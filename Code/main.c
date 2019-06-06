@@ -230,6 +230,7 @@ int main(int argc, char **argv)
 	dogInfos.entity.positionY = 0;
 	dogInfos.entity.ID = 0;
 	dogInfos.entity.nickname = blue;
+	dogInfos.isPushingSheep = 0;
 	dogInfos.targetPositionX = 1000;
 	dogInfos.targetPositionY = 1000;
 
