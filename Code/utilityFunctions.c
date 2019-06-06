@@ -154,7 +154,7 @@ void print_packet(unsigned char* packet)
         for (int i=0; i<8; i++)
         {
                 printf("%d ",packet[i]);
-								if (i = 3%4) { printf("\n");}    //Cette ligne de code sert à faire revenir à la ligne pour différencier les coords en x et en y
+								if (i == 3%4) { printf("\n");}    //Cette ligne de code sert à faire revenir à la ligne pour différencier les coords en x et en y
         }
         printf("\n\n");
 }
@@ -166,7 +166,7 @@ void print_packet_completed(unsigned char* packet)
     for (int i=0; i<13; i++)
     {
           printf("%d ",packet[i]);
-					if (i = 0%4) { printf("\n");}    //Cette ligne de code sert à faire revenir à la ligne pour différencier les différentes valeurs du packets
+					if (i == 0%4) { printf("\n");}    //Cette ligne de code sert à faire revenir à la ligne pour différencier les différentes valeurs du packets
     /*    }
         printf("\n");
         for (i=5;i<9;i++)

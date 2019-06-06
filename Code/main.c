@@ -121,7 +121,7 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 				//Si on doit bouger
 				if(dogInfos.targetPositionX != 0 && dogInfos.targetPositionY != 0){
 
-					unsigned char* toSendPacket = packet_creator_completed(packet_creator(dogInfos.targetPositionX,dogInfos.targetPositionY));
+					unsigned char* toSendPacket = packet_creator(dogInfos.targetPositionX,dogInfos.targetPositionY);
 					sendCommand(wsi,toSendPacket,13);
 
 				}
