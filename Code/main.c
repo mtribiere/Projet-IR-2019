@@ -103,12 +103,16 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 
 				}
 
+				////////////Chercher notre position dans le packet
+				int idInPositionPacket = 0;
+				while(dogInfos.entity.ID != getIDFromPositionPacket(buff+3,len,idInPositionPacket) && idInPositionPacket<=numberOfEntity) idInPositionPacket++;
+
 				////////////Mettre a jour notre position
-				unsigned int *posCurrent = getPosFromPositionPacket(buff+3,len,numberOfEntity);
+				unsigned int *posCurrent = getPosFromPositionPacket(buff+3,len,idInPositionPacket);
 				dogInfos.entity.positionX = posCurrent[0];
 				dogInfos.entity.positionY = posCurrent[1];
 
-				printf("Dog Position : (%d;%d)\n",dogInfos.entity.positionX,dogInfos.entity.positionY);
+				printf("Dog %d Position : (%d;%d)\n",dogInfos.entity.ID,dogInfos.entity.positionX,dogInfos.entity.positionY);
 
 				///////////Calculer la strategie
 				computeStrategy(&dogInfos,entityAround,numberOfEntity);
@@ -119,11 +123,21 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 
 					unsigned char* toSendPacket = packet_creator_completed(packet_creator(dogInfos.targetPositionX,dogInfos.targetPositionY));
 					sendCommand(wsi,toSendPacket,13);
-					
+
 				}
+
+				printf("\n\n");
 		}
 
-		printf("\n\n");
+		//Si le message recu est l'attribution d'ID
+		if(buff[0] == 32){
+			//Si notre ID n'est pas déja defini
+			if(dogInfos.entity.ID == 0){
+				dogInfos.entity.ID = buff[1];
+			}
+		}
+
+
 
 	return 0;
 }
@@ -214,6 +228,7 @@ int main(int argc, char **argv)
 	//Initialisation des variables
 	dogInfos.entity.positionX = 0;
 	dogInfos.entity.positionY = 0;
+	dogInfos.entity.ID = 0;
 	dogInfos.entity.nickname = blue;
 	dogInfos.targetPositionX = 1000;
 	dogInfos.targetPositionY = 1000;
