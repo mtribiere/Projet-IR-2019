@@ -2,6 +2,7 @@
 #define ENTITY_FILE
 
 #define MAXENTITY 2000
+#define ENTITY_SIZE 40
 
 typedef struct entity {
   unsigned int positionX;

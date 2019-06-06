@@ -20,8 +20,8 @@ void computeStrategy(Dog *dogInfos,Entity *entityAround,int numberOfEntity){
 
     srandom(time(NULL));
 
-    dogInfos->targetPositionX = (rand()%MAP_SIZE_X);
-    dogInfos->targetPositionY = (rand()%MAP_SIZE_Y);
+    dogInfos->targetPositionX = (rand()%(MAP_SIZE_X-2*ENTITY_SIZE)) + ENTITY_SIZE;
+    dogInfos->targetPositionY = (rand()%(MAP_SIZE_Y-2*ENTITY_SIZE)) + ENTITY_SIZE;
   }
 
 }
