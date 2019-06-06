@@ -1,15 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include <getopt.h>
-//#include <string.h>
-//#include <signal.h>
-//#include <syslog.h>
-//#include <sys/time.h>
-//#include <unistd.h>
 #include <math.h>
 
 #include "utilityFunctions.h"
 #include "map.h"
+
 // A INITIALISER DANS UNE FONCTION AU DEBUT DE LA PARTIE
 
 void print_packet(unsigned char* packet);
@@ -19,81 +14,91 @@ void print_position(unsigned int* position);
 
 //On prend en argument trois nombres dont deux non limités à 256
 //On veut retourner tableau contenant le premier nombre et la décomposition en hexadécimal des deux autres nombres
+
 unsigned char* packet_creator(unsigned int x_position,unsigned int y_position)
 {
-	unsigned char* packet=malloc(8*sizeof(unsigned char));
-
-	int i;
+	unsigned char* packet=malloc(13*sizeof(unsigned char));
 
 	unsigned char x1,x2,x3,x4;
 	unsigned char y1,y2,y3,y4;
 
 	// Calcul des nombres à rentrer pour atteindre les positions souhaitees :
 	if (x_position<256)
-	{
-		x3=00;
-                x2=00;
-		x1=x_position;
-	}
+		{
+			x3=00;
+      x2=00;
+			x1=x_position;
+		}
 	else if (x_position>256 && x_position<(256*256))
-	{
-		x3=00;
-		x2=x_position/256;
-		x1=x_position-x2*256;
-	}
-        else if (x_position>(256*256))
-	{
-		x3=x_position/(256*256);
-		x2=(x_position-x3*256*256)/256;
-		x1=(x_position-x3*256*256-x2*256);
-	}
-        x4=00;
+		{
+			x3=00;
+			x2=x_position/256;
+			x1=x_position-x2*256;
+		}
+  else if (x_position>(256*256))
+		{
+			x3=x_position/(256*256);
+			x2=(x_position-x3*256*256)/256;
+			x1=(x_position-x3*256*256-x2*256);
+		}
+
+  x4=00;
 
 	if (y_position<256)
-        {
-		y3=00;
-		y2=00;
-                y1=y_position;
-        }
-        else if (y_position>256 && y_position<(256*256))
-        {
-		y3=00;
-                y2=y_position/256;
-                y1=y_position-y2*256;
-        }
-        else if (y_position>(256*256))
-        {
-                y3=y_position/(256*256);
-                y2=(y_position-y3*256*256)/256;
-                y1=(y_position-y3*256*256-y2*256);
-        }
-        y4=00;
+    {
+			y3=00;
+			y2=00;
+    	y1=y_position;
+    }
+  else if (y_position>256 && y_position<(256*256))
+    {
+			y3=00;
+      y2=y_position/256;
+      y1=y_position-y2*256;
+    }
+  else if (y_position>(256*256))
+    {
+      y3=y_position/(256*256);
+      y2=(y_position-y3*256*256)/256;
+    	y1=(y_position-y3*256*256-y2*256);
+    }
+
+  y4=00;
+
+	packet[0] = 16;
 
 	unsigned char tab[]={x1,x2,x3,x4,y1,y2,y3,y4};
-	for (i=0;i<8;i++)
+	for (int i=1; i<9; i++)
 	{
-		packet[i]=tab[i];
+		packet[i] = tab[i-1];
+	}
+
+	// unsigned char* packet_completed = malloc(13*sizeof(unsigned char));
+
+
+	for (int i=9; i<13; i++)
+	{
+		packet[i] = 00;
 	}
 
 	return packet;
 }
 
-unsigned char* packet_creator_completed(unsigned char* packet)
+/* unsigned char* packet_creator_completed(unsigned char* packet)
 {
-        unsigned char* packet_completed=malloc(13*sizeof(unsigned char));
-	int i;
+  unsigned char* packet_completed = malloc(13*sizeof(unsigned char));
 
-	packet_completed[0]=16;
-	for (i=1;i<9;i++)
+	packet_completed[0] = 16;
+	for (int i=1; i<9; i++)
         {
-                packet_completed[i]=packet[i-1];
+                packet_completed[i] = packet[i-1];
         }
-	for (i=9;i<13;i++)
+	for (int i=9; i<13; i++)
 	{
-		packet_completed[i]=00;
+		packet_completed[i] = 00;
 	}
         return packet_completed;
-}
+} */
 
 
 //FAIRE UNE FONCTION POUR TRANSFORMER TOUS LES Xi ET Yi EN HEXADECIMAL => PAQUET PRET A L ENVOI
@@ -102,26 +107,30 @@ unsigned char* packet_creator_completed(unsigned char* packet)
 
 //On prend en argument un tableau contenant un premier nombre et la décomposition en héxadécimal de deux nombres
 //On veut retourner un tableau de trois nombres dont deux non limités à 256
+
 unsigned int* position_creator(unsigned char* packet)
 {
-        unsigned int* position=malloc(2*sizeof(unsigned int));
+  unsigned int* position=malloc(2*sizeof(unsigned int));
 
-	unsigned int x_position,y_position;
-	int i;
+	unsigned int x_position, y_position;
 
         // Calcul des  positions de l'objet :
-	x_position=packet[0];
+
+	x_position = packet[0];
+
 	if(packet[1]!=0)
 	{
 		x_position+=256*packet[1];
 	}
+
 	if(packet[2]!=0)
 	{
 		x_position+=256*256*packet[2];
 	}
 
 	y_position=packet[4];
-        if(packet[5]!=0)
+
+  if(packet[5]!=0)
         {
                 y_position+=256*packet[5];
         }
@@ -130,39 +139,35 @@ unsigned int* position_creator(unsigned char* packet)
                 y_position+=256*256*packet[6];
         }
 
-       	unsigned int tab[]={x_position,y_position};
-        for (i=0;i<2;i++)
-        {
-                position[i]=tab[i];
-        }
+  unsigned int tab[]={x_position,y_position};
+  for (int i=0; i<2; i++)
+    {
+      position[i]=tab[i];
+  	}
 
-        return position;
+  return position;
 }
 
 
 void print_packet(unsigned char* packet)
 {
-        int i;
-        for (i=0;i<4;i++)
+        for (int i=0; i<8; i++)
         {
                 printf("%d ",packet[i]);
-        }
-        printf("\n");
-        for (i=4;i<8;i++)
-        {
-                printf("%d ",packet[i]);
+								if (i = 3%4) { printf("\n");}    //Cette ligne de code sert à faire revenir à la ligne pour différencier les coords en x et en y
         }
         printf("\n\n");
 }
 
 void print_packet_completed(unsigned char* packet)
 {
-        int i=0;
-	printf("%d \n",packet[0]);
-        for (i=1;i<5;i++)
-        {
-                printf("%d ",packet[i]);
-        }
+      /*  int i=0;
+	printf("%d \n",packet[0]); */
+    for (int i=0; i<13; i++)
+    {
+          printf("%d ",packet[i]);
+					if (i = 0%4) { printf("\n");}    //Cette ligne de code sert à faire revenir à la ligne pour différencier les différentes valeurs du packets
+    /*    }
         printf("\n");
         for (i=5;i<9;i++)
         {
@@ -171,9 +176,9 @@ void print_packet_completed(unsigned char* packet)
         printf("\n");
 	for (i=9;i<13;i++)
         {
-                printf("%d ",packet[i]);
-        }
-        printf("\n\n");
+                printf("%d ",packet[i]);*/
+    }
+  	printf("\n\n");
 }
 
 
@@ -361,47 +366,3 @@ unsigned int* position_calculator(int rayon, unsigned int* position_brebis)
 
         return position_aimed;
 }
-
-
-/*
-int main(void)
-{
-	unsigned char* paquet1;
-	unsigned char* paquet2;
-
-	unsigned int* position1;
-	unsigned int* position2;
-
-	paquet1=packet_creator(62,62);
-	paquet2=packet_creator(6238,1271);
-	printf("\n\n\n\n");
-	print_packet(paquet1);
-	print_packet(paquet2);
-
-	paquet1=packet_creator_completed(paquet1);
-        paquet2=packet_creator_completed(paquet2);
-        printf("\n\n\n\n");
-        print_packet_completed(paquet1);
-        print_packet_completed(paquet2);
-	printf("\n\n\n\n");
-
-	paquet1[0]=10;
-	paquet1[1]=1;
-	paquet1[2]=0;
-	paquet1[3]=0;
-
-        paquet2[0]=10;
-        paquet2[1]=1;
-        paquet2[2]=1;
-        paquet2[3]=0;
-
-	position1=position_creator(paquet1);
-	position2=position_creator(paquet2);
-	printf("\n\n\n\n");
-	print_position(position1);
-	print_position(position2);
-
-	printf("\n");
-	return 1;
-}
-*/
