@@ -14,7 +14,7 @@ typedef struct entity {
 
 typedef struct dog{
   Entity entity;
-  int isPushingSheep;
+  int state;
   unsigned int targetPositionX;
   unsigned int targetPositionY;
 }Dog;

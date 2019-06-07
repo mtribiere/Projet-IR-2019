@@ -22,7 +22,7 @@ int getSizeFromPositionPacket(unsigned char *buff,size_t len){
 	while(buff[offset] != 0){
 
 		//Se deplacer avant le nickname
-		offset+=17;
+		offset+=14;
 
 		//Se deplacer après le nickname
 		while(buff[offset] != 0) offset++;
@@ -48,8 +48,7 @@ int getIDFromPositionPacket(unsigned char *buff,size_t len,int id){
       //printf("Check packet %d\n",counter);
 
       //Se deplacer avant le nickname
-      offset+=17;
-
+      offset+=14;
       //Se deplacer après le nickname (le paquet suivant)
       while(buff[offset] != 0) offset++;
       offset++;
@@ -76,7 +75,7 @@ unsigned int* getPosFromPositionPacket(unsigned char *buff,size_t len,int id){
 		while(buff[offset] != 0 && counter != id){
 
 			//Se deplacer avant le nickname
-			offset+=17;
+			offset+=14;
 
 			//Se deplacer après le nickname (le paquet suivant)
 			while(buff[offset] != 0) offset++;

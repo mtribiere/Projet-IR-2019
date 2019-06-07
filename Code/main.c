@@ -172,7 +172,7 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 
 		sendCommand(wsi,connectionStart1,sizeof(connectionStart1));
 		sendCommand(wsi,connectionStart2,sizeof(connectionStart2));
-		sendCommand(wsi,dogInfos.entity.nickname,6);
+		sendCommand(wsi,dogInfos.entity.nickname,sizeofYellowPacket);
 		//sendCommand(wsi,position,sizeof(position));
 		break;
 
@@ -229,7 +229,7 @@ int main(int argc, char **argv)
 	dogInfos.entity.positionX = 0;
 	dogInfos.entity.positionY = 0;
 	dogInfos.entity.ID = 0;
-	dogInfos.entity.nickname = blue;
+	dogInfos.entity.nickname = yellow;
 	dogInfos.isPushingSheep = 0;
 	dogInfos.targetPositionX = 1000;
 	dogInfos.targetPositionY = 1000;

@@ -10,9 +10,7 @@
 void print_packet(unsigned char* packet);
 void print_position(unsigned int* position);
 
-// CHANGER TOUS LES INT EN UNSIGNED INT
-
-//On prend en argument trois nombres dont deux non limités à 256
+//On prend en argument deux nombres non limités à 256
 //On veut retourner tableau contenant le premier nombre et la décomposition en hexadécimal des deux autres nombres
 
 unsigned char* packet_creator(unsigned int x_position,unsigned int y_position)
@@ -317,10 +315,11 @@ unsigned int* position_calculator(int rayon, unsigned int* position_brebis)
 	coefficient=position_brebis[2]/position_brebis[1];
 
         // Deux équations : Yfinal = coefficient*Xfinal
-        // Deux inconnues : sqrt(Xfinal² + Yfinal²) = rayon+1
+        // 		    sqrt(Xfinal² + Yfinal²) = rayon+1
+	// Deux inconnues : Xfinal et Yfinal
         // On résoud le système et on trouve :
-        // X = sqrt((rayon+1)/(1+coefficient²))
-        // Y = coefficent*sqrt((rayon+1)/(1+coefficient²))
+        // Xfinal = sqrt((rayon+1)/(1+coefficient²))
+        // Yfinal = coefficent*sqrt((rayon+1)/(1+coefficient²))
 
 
         //Stratégie de base
