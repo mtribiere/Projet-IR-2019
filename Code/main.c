@@ -99,13 +99,12 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 
 					//Recuperer le nickname
 					tmp.nickname = getNicknameFromPositionPacket(buff+3,len,i);
-					printf("Nickname : %d %d %d\n",tmp.nickname[0],tmp.nickname[1],tmp.nickname[2]);
 
 					//Ajouter l'entité au tableau
 					entityAround[i] = tmp;
 
 					//DEBUG
-					printf("Entite %s ID : %d ; Position = (%d;%d) \n",entityAround[i].nickname,entityAround[i].ID,entityAround[i].positionX,entityAround[i].positionY);
+					printf("Entite %s ; ID : %d ; Position = (%d;%d) \n",entityAround[i].nickname,entityAround[i].ID,entityAround[i].positionX,entityAround[i].positionY);
 
 				}
 

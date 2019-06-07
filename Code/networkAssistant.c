@@ -119,6 +119,9 @@ char *getNicknameFromPositionPacket(unsigned char *buff,size_t len,int id){
 
 	}
 
+	//Se deplacer avant le nickname
+	offset+=18;
+	
 	//Recuperer la taille du nickname
 	int sizeOfNickname = 0;
 	while(buff[offset+sizeOfNickname] != 0) sizeOfNickname++;
