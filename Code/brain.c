@@ -35,11 +35,12 @@ int isTargetPositionReached(Dog *dogInfos){
 /**************************
 \Calcule la strategie (Déplacements aléatoires + ramener brebis)
 ***************************/
-
-void computeStrategy(Dog *dogInfos,Entity *entityAround,int numberOfEntity){
+/*
+ void computeStrategy(Dog *dogInfos,Entity *entityAround,int numberOfEntity){
 
   if(isTargetPositionReached(dogInfos)){
     dogInfos->targetPositionX = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
     dogInfos->targetPositionY = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
   }
 }
+*/

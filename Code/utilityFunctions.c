@@ -4,13 +4,16 @@
 
 #include "utilityFunctions.h"
 #include "map.h"
+#include "entity.h"
 
 // A INITIALISER DANS UNE FONCTION AU DEBUT DE LA PARTIE
 
 void print_packet(unsigned char* packet);
 void print_position(unsigned int* position);
 
-//On prend en argument deux nombres non limités à 256
+// CHANGER TOUS LES INT EN UNSIGNED INT
+
+//On prend en argument trois nombres dont deux non limités à 256
 //On veut retourner tableau contenant le premier nombre et la décomposition en hexadécimal des deux autres nombres
 
 unsigned char* packet_creator(unsigned int x_position,unsigned int y_position)
@@ -315,11 +318,10 @@ unsigned int* position_calculator(int rayon, unsigned int* position_brebis)
 	coefficient=position_brebis[2]/position_brebis[1];
 
         // Deux équations : Yfinal = coefficient*Xfinal
-        // 		    sqrt(Xfinal² + Yfinal²) = rayon+1
-	// Deux inconnues : Xfinal et Yfinal
+        // Deux inconnues : sqrt(Xfinal² + Yfinal²) = rayon+1
         // On résoud le système et on trouve :
-        // Xfinal = sqrt((rayon+1)/(1+coefficient²))
-        // Yfinal = coefficent*sqrt((rayon+1)/(1+coefficient²))
+        // X = sqrt((rayon+1)/(1+coefficient²))
+        // Y = coefficent*sqrt((rayon+1)/(1+coefficient²))
 
 
         //Stratégie de base
@@ -364,4 +366,98 @@ unsigned int* position_calculator(int rayon, unsigned int* position_brebis)
         }
 
         return position_aimed;
+}
+
+
+
+// ATTENTION CONTOURNEMENT DIFFERENT SELON SI BREBIS DANS PARTIE INFERIEURE OU SUPERIEURE DE LA CARTE!!!
+// 0 : Position indéfinie
+// 1 : Rayon plus bas que brebis, Rayon plus sur la gauche
+// 2 : Rayon plus bas que brebis, Rayon plus sur la droite
+// 3 : Rayon plus haut que brebis, Rayon plus sur la gauche
+// 4 : Rayon plus haut que brebis, Rayon plus sur la droite
+// 5 : Position finale atteinte, on est prêt à pousser brebis vers destination
+// On considère que la hauteur de la brebis est différente de Largeur / 2 (sinon pas de déplacement à faire)
+
+void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
+// Rajouter les [numberOfEntity]
+{
+	// Si la position est indéfinie, on lui fait rejoindre l'une des 4 positions définies
+	// Selon que la brebis est dans la partie supérieure ou inférieure de la carte, state change
+	if(dogInfos->state==0)
+	{
+		if(dogInfos->targetPositionX <= entityAround[numberOfEntity].positionX && dogInfos->targetPositionY <= entityAround[numberOfEntity].positionY)
+		{
+			dogInfos->targetPositionX=(entityAround[numberOfEntity].positionX)-dogInfos->actionRange;
+			dogInfos->targetPositionY=(entityAround[numberOfEntity].positionY)-dogInfos->actionRange;
+			if(entityAround[numberOfEntity].positionY < MAP_SIZE_Y) dogInfos->state=3;
+			else dogInfos->state=1;
+		}
+		else if(dogInfos->targetPositionX > entityAround[numberOfEntity].positionX && dogInfos->targetPositionY <= entityAround[numberOfEntity].positionY)
+		{
+			dogInfos->targetPositionX=(entityAround[numberOfEntity].positionX)+dogInfos->actionRange;
+			dogInfos->targetPositionY=(entityAround[numberOfEntity].positionY)-dogInfos->actionRange;
+			if (entityAround[numberOfEntity].positionY < MAP_SIZE_Y) dogInfos->state=4;
+			else dogInfos->state=2;
+		}
+		else if(dogInfos->targetPositionX <= entityAround[numberOfEntity].positionX && dogInfos->targetPositionY > entityAround[numberOfEntity].positionY)
+		{
+			dogInfos->targetPositionX=(entityAround[numberOfEntity].positionX)-dogInfos->actionRange;
+			dogInfos->targetPositionY=(entityAround[numberOfEntity].positionY)+dogInfos->actionRange;
+			if(entityAround[numberOfEntity].positionY < MAP_SIZE_Y) dogInfos->state=1;
+			else dogInfos->state=3;
+		}
+		else if(dogInfos->targetPositionX > entityAround[numberOfEntity].positionX && dogInfos->targetPositionY > entityAround[numberOfEntity].positionY)
+		{
+			dogInfos->targetPositionX=(entityAround[numberOfEntity].positionX)+dogInfos->actionRange;
+			dogInfos->targetPositionY=(entityAround[numberOfEntity].positionY)+dogInfos->actionRange;
+			if(entityAround[numberOfEntity].positionY < MAP_SIZE_Y) dogInfos->state=2;
+			else dogInfos->state=4;
+		}
+	}
+	// S'il est à la position 1, on l'emmène à la position 3 (qui change selon position brebis)
+	else if(dogInfos->state==1)
+	{
+		if(entityAround[numberOfEntity].positionY < MAP_SIZE_Y)
+		{
+			dogInfos->targetPositionX=(entityAround[numberOfEntity].positionX)-dogInfos->actionRange;
+			dogInfos->targetPositionY=(entityAround[numberOfEntity].positionY)-dogInfos->actionRange;
+		}
+		else
+		{
+			dogInfos->targetPositionX=(entityAround[numberOfEntity].positionX)-dogInfos->actionRange;
+			dogInfos->targetPositionY=(entityAround[numberOfEntity].positionY)+dogInfos->actionRange;
+		}
+		dogInfos->state=3;
+	}
+	// S'il est à la position 2, on l'emmène à la position 4 (qui change selon position brebis)
+	else if(dogInfos->state==2)
+	{
+		if(entityAround[numberOfEntity].positionY < MAP_SIZE_Y)
+		{
+			dogInfos->targetPositionX=(entityAround[numberOfEntity].positionX)+dogInfos->actionRange;
+			dogInfos->targetPositionY=(entityAround[numberOfEntity].positionY)-dogInfos->actionRange;
+		}
+		else
+		{
+			dogInfos->targetPositionX=(entityAround[numberOfEntity].positionX)+dogInfos->actionRange;
+			dogInfos->targetPositionY=(entityAround[numberOfEntity].positionY)+dogInfos->actionRange;
+		}
+		dogInfos->state=4;
+	// S'il est à la position 3 ou à la position 4, on l'emmène à la position finale (qui change selon position brebis)
+	}
+	else
+	{
+		if(entityAround[numberOfEntity].positionY < MAP_SIZE_Y)
+		{
+			dogInfos->targetPositionX=(entityAround[numberOfEntity].positionX);
+			dogInfos->targetPositionY=(entityAround[numberOfEntity].positionY)-dogInfos->actionRange;
+		}
+		else
+		{
+			dogInfos->targetPositionX=(entityAround[numberOfEntity].positionX);
+			dogInfos->targetPositionY=(entityAround[numberOfEntity].positionY)+dogInfos->actionRange;
+		}
+		dogInfos->state=5;
+	}
 }
