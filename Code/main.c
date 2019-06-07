@@ -229,11 +229,12 @@ int main(int argc, char **argv)
 {
 
 	//Initialisation des variables
-	dogInfos.dogType = 5;
+	dogInfos.dogType = 1;
 	dogInfos.entity.positionX = 0;
 	dogInfos.entity.positionY = 0;
 	dogInfos.entity.ID = 0;
 	dogInfos.entity.nickname = nicknames[dogInfos.dogType];
+	dogInfos.actionRange = 100;
 	dogInfos.targetPositionX = 1000;
 	dogInfos.targetPositionY = 1000;
 
