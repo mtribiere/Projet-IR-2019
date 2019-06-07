@@ -229,7 +229,7 @@ int main(int argc, char **argv)
 {
 
 	//Initialisation des variables
-	dogInfos.dogType = 0;
+	dogInfos.dogType = 5;
 	dogInfos.entity.positionX = 0;
 	dogInfos.entity.positionY = 0;
 	dogInfos.entity.ID = 0;
