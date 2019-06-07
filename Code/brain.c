@@ -37,7 +37,6 @@ int isTargetPositionReached(Dog *dogInfos){
 ***************************/
 /*
  void computeStrategy(Dog *dogInfos,Entity *entityAround,int numberOfEntity){
-
   if(isTargetPositionReached(dogInfos)){
     dogInfos->targetPositionX = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
     dogInfos->targetPositionY = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
@@ -89,8 +88,111 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
   }
 
   //Si on est un chien Vert
-  if(dogInfos->dogType == 1){
+  if(dogInfos->dogType == 1)
+  {
+    int sheepDetected = 0;
+    int sheepToMove = 0;
+    int sheep;
+    // Détection des éventuelles brebis et sélection de celle à déplacer
+    for (sheep=0; sheep < numberOfEntity; sheep++)
+    {
+      if(entityAround[sheep].nickname[0] == 'b' && entityAround[sheep].nickname[1] == 'o' entityAround[sheep].nickname[2] == 't')
+      {
+        sheepDetected = 1;
+        sheepToMove = sheep;
+      }
+    }
+    if(sheepDetected){
+  	// Si la position est indéfinie, on lui fait rejoindre l'une des 4 positions définies
+  	// Selon que la brebis est dans la partie supérieure ou inférieure de la carte, state change
+  	if(dogInfos->state==0)
+  	{
+  		if(dogInfos->targetPositionX <= entityAround[sheepToMove].positionX && dogInfos->targetPositionY <= entityAround[sheepToMove].positionY)
+  		{
+  			dogInfos->targetPositionX=(entityAround[sheepToMove].positionX)-dogInfos->actionRange;
+  			dogInfos->targetPositionY=(entityAround[sheepToMove].positionY)-dogInfos->actionRange;
+  			if(entityAround[sheepToMove].positionY < MAP_SIZE_Y) dogInfos->state=3;
+  			else dogInfos->state=1;
+  		}
+  		else if(dogInfos->targetPositionX > entityAround[sheepToMove].positionX && dogInfos->targetPositionY <= entityAround[sheepToMove].positionY)
+  		{
+  			dogInfos->targetPositionX=(entityAround[sheepToMove].positionX)+dogInfos->actionRange;
+  			dogInfos->targetPositionY=(entityAround[sheepToMove].positionY)-dogInfos->actionRange;
+  			if (entityAround[sheepToMove].positionY < MAP_SIZE_Y) dogInfos->state=4;
+  			else dogInfos->state=2;
+  		}
+  		else if(dogInfos->targetPositionX <= entityAround[sheepToMove].positionX && dogInfos->targetPositionY > entityAround[sheepToMove].positionY)
+  		{
+  			dogInfos->targetPositionX=(entityAround[sheepToMove].positionX)-dogInfos->actionRange;
+  			dogInfos->targetPositionY=(entityAround[sheepToMove].positionY)+dogInfos->actionRange;
+  			if(entityAround[sheepToMove].positionY < MAP_SIZE_Y) dogInfos->state=1;
+  			else dogInfos->state=3;
+  		}
+  		else if(dogInfos->targetPositionX > entityAround[sheepToMove].positionX && dogInfos->targetPositionY > entityAround[sheepToMove].positionY)
+  		{
+  			dogInfos->targetPositionX=(entityAround[sheepToMove].positionX)+dogInfos->actionRange;
+  			dogInfos->targetPositionY=(entityAround[sheepToMove].positionY)+dogInfos->actionRange;
+  			if(entityAround[sheepToMove].positionY < MAP_SIZE_Y) dogInfos->state=2;
+  			else dogInfos->state=4;
+  		}
+  	}
+  	// S'il est à la position 1, on l'emmène à la position 3 (qui change selon position brebis)
+  	else if(dogInfos->state==1)
+  	{
+  		if(entityAround[sheepToMove].positionY < MAP_SIZE_Y)
+  		{
+  			dogInfos->targetPositionX=(entityAround[sheepToMove].positionX)-dogInfos->actionRange;
+  			dogInfos->targetPositionY=(entityAround[sheepToMove].positionY)-dogInfos->actionRange;
+  		}
+  		else
+  		{
+  			dogInfos->targetPositionX=(entityAround[sheepToMove].positionX)-dogInfos->actionRange;
+  			dogInfos->targetPositionY=(entityAround[sheepToMove].positionY)+dogInfos->actionRange;
+  		}
+  		dogInfos->state=3;
+  	}
+  	// S'il est à la position 2, on l'emmène à la position 4 (qui change selon position brebis)
+  	else if(dogInfos->state==2)
+  	{
+  		if(entityAround[sheepToMove].positionY < MAP_SIZE_Y)
+  		{
+  			dogInfos->targetPositionX=(entityAround[sheepToMove].positionX)+dogInfos->actionRange;
+  			dogInfos->targetPositionY=(entityAround[sheepToMove].positionY)-dogInfos->actionRange;
+  		}
+  		else
+  		{
+  			dogInfos->targetPositionX=(entityAround[sheepToMove].positionX)+dogInfos->actionRange;
+  			dogInfos->targetPositionY=(entityAround[sheepToMove].positionY)+dogInfos->actionRange;
+  		}
+  		dogInfos->state=4;
+  	// S'il est à la position 3 ou à la position 4, on l'emmène à la position finale (qui change selon position brebis)
+  	}
+  	else if(dogInfos->state==3 || dogInfos->state==4)
+  	{
+  		if(entityAround[sheepToMove].positionY < MAP_SIZE_Y)
+  		{
+  			dogInfos->targetPositionX=(entityAround[sheepToMove].positionX);
+  			dogInfos->targetPositionY=(entityAround[sheepToMove].positionY)-dogInfos->actionRange;
+  		}
+  		else
+  		{
+  			dogInfos->targetPositionX=(entityAround[sheepToMove].positionX);
+  			dogInfos->targetPositionY=(entityAround[sheepToMove].positionY)+dogInfos->actionRange;
+  		}
+  		dogInfos->state=5;
+  	}
+  	else if(dogInfos->state==5)
+  	{
+  		// On veut descendre verticalement => pas de changement pour positionX
+      if(entityAround[sheepToMove].positionY < MAP_SIZE_Y) dogInfos->targetPositionY=(MAP_SIZE_Y/2)-dogInfos->actionRange;
+  		else dogInfos->targetPositionY=(MAP_SIZE_Y/2)+dogInfos->actionRange;
+  		dogInfos->state=6;
+  	}
+  }
+  else // Si aucune brebis n'a été détectée dans le champ de vision 
+  {
 
   }
 
+  }
 }
