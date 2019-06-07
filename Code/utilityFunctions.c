@@ -465,5 +465,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 	{
 		// On veut descendre verticalement => pas de changement pour positionX
 		dogInfos->targetPositionY=(MAP_SIZE_Y/2)+dogInfos->actionRange;
+		dogInfos->state=6;
 	}
 }
