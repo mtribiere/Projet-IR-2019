@@ -377,6 +377,7 @@ unsigned int* position_calculator(int rayon, unsigned int* position_brebis)
 // 3 : Rayon plus haut que brebis, Rayon plus sur la gauche
 // 4 : Rayon plus haut que brebis, Rayon plus sur la droite
 // 5 : Position finale atteinte, on est prêt à pousser brebis vers destination
+// 6 : Position où la brebis a été amenée à destination
 // On considère que la hauteur de la brebis est différente de Largeur / 2 (sinon pas de déplacement à faire)
 
 void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
@@ -446,7 +447,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 		dogInfos->state=4;
 	// S'il est à la position 3 ou à la position 4, on l'emmène à la position finale (qui change selon position brebis)
 	}
-	else
+	else if(dogInfos->state==3 || dogInfos->state==4)
 	{
 		if(entityAround[numberOfEntity].positionY < MAP_SIZE_Y)
 		{
@@ -459,5 +460,10 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 			dogInfos->targetPositionY=(entityAround[numberOfEntity].positionY)+dogInfos->actionRange;
 		}
 		dogInfos->state=5;
+	}
+	else if if(dogInfos->state==5)
+	{
+		// On veut descendre verticalement => pas de changement pour positionX
+		dogInfos->targetPositionY=(MAP_SIZE_Y/2)+dogInfos->actionRange;
 	}
 }
