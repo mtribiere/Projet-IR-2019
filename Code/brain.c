@@ -188,10 +188,17 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
   		else dogInfos->targetPositionY=(MAP_SIZE_Y/2)+dogInfos->actionRange;
   		dogInfos->state=6;
   	}
+    else if(dogInfos->state==6)
+  	{
+      dogInfos->state = 0;
+    }
   }
-  else // Si aucune brebis n'a été détectée dans le champ de vision 
+  else // Si aucune brebis n'a été détectée dans le champ de vision
   {
-
+    if(isTargetPositionReached(dogInfos)){
+      dogInfos->targetPositionX = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
+      dogInfos->targetPositionY = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
+    }
   }
 
   }
