@@ -76,6 +76,8 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 
 		//Si le message recu est une mise a jour de position
 		if(buff[0] == 16){
+			/////////////Supprimer les anciens nickname (fuites de memoire)
+			for(int i = 0;i<numberOfEntity;i++) free(entityAround[i].nickname);
 
 			////////////Mettre a jour les entité presentes
 				//Definir le nombre d'entité aux alentours
@@ -95,11 +97,15 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 					tmp.positionX = pos[0];
 					tmp.positionY = pos[1];
 
+					//Recuperer le nickname
+					tmp.nickname = getNicknameFromPositionPacket(buff+3,len,i);
+					printf("Nickname : %d %d %d\n",tmp.nickname[0],tmp.nickname[1],tmp.nickname[2]);
+
 					//Ajouter l'entité au tableau
 					entityAround[i] = tmp;
 
 					//DEBUG
-					printf("Entite %d ID : %d ; Position = (%d;%d) \n",i,entityAround[i].ID,entityAround[i].positionX,entityAround[i].positionY);
+					printf("Entite %s ID : %d ; Position = (%d;%d) \n",entityAround[i].nickname,entityAround[i].ID,entityAround[i].positionX,entityAround[i].positionY);
 
 				}
 
@@ -114,6 +120,7 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 
 				printf("Dog %d Position : (%d;%d)\n",dogInfos.entity.ID,dogInfos.entity.positionX,dogInfos.entity.positionY);
 				printf("Dog %d Target :   (%d;%d)\n",dogInfos.entity.ID,dogInfos.targetPositionX,dogInfos.targetPositionY);
+
 				///////////Calculer la strategie
 				computeStrategy(&dogInfos,entityAround,numberOfEntity);
 
@@ -136,8 +143,6 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 				dogInfos.entity.ID = buff[1];
 			}
 		}
-
-
 
 	return 0;
 }
@@ -172,8 +177,7 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 
 		sendCommand(wsi,connectionStart1,sizeof(connectionStart1));
 		sendCommand(wsi,connectionStart2,sizeof(connectionStart2));
-		sendCommand(wsi,dogInfos.entity.nickname,sizeofYellowPacket);
-		//sendCommand(wsi,position,sizeof(position));
+		sendCommand(wsi,colorPackets[dogInfos.dogType],sizeOfColorPackets[dogInfos.dogType]);
 		break;
 
  	case LWS_CALLBACK_CLIENT_WRITEABLE:
@@ -226,11 +230,11 @@ int main(int argc, char **argv)
 {
 
 	//Initialisation des variables
+	dogInfos.dogType = 0;
 	dogInfos.entity.positionX = 0;
 	dogInfos.entity.positionY = 0;
 	dogInfos.entity.ID = 0;
-	dogInfos.entity.nickname = yellow;
-	dogInfos.isPushingSheep = 0;
+	dogInfos.entity.nickname = nicknames[dogInfos.dogType];
 	dogInfos.targetPositionX = 1000;
 	dogInfos.targetPositionY = 1000;
 

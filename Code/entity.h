@@ -9,12 +9,14 @@ typedef struct entity {
   unsigned int positionX;
   unsigned int positionY;
   unsigned int ID;
-  unsigned char *nickname;
+  char *nickname;
 } Entity;
 
 typedef struct dog{
   Entity entity;
   int state;
+  int dogType;
+  int actionRange;
   unsigned int targetPositionX;
   unsigned int targetPositionY;
 }Dog;

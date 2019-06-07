@@ -14,7 +14,7 @@ brain.o: brain.c
 	gcc -Wall -std=gnu99 -g -c $^
 
 test: sock
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.114"
+	./sock -p 2001 -o agar.io 192.168.130.114
 
 multi : sock
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.114"
@@ -23,7 +23,7 @@ multi : sock
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.114"
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.114"
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.114"
-	
+
 local: sock
 	./sock -p 1443 -o agar.io 127.0.0.1
 

@@ -1,12 +1,15 @@
 #ifndef PACKETS
 #define PACKETS
 
-
 unsigned char connectionStart1[] = {255,
                                    00,00,00,00};
 
 unsigned char connectionStart2[] = {254,
                                    13,00,00,00};
+
+int sizeOfConnectionStart1 = 5;
+int sizeOfConnectionStart2 = 5;
+
 
 unsigned char blue[] = {00,
                         98,108,117,101,
@@ -32,14 +35,18 @@ unsigned char yellow[] = {00,
                          121,101,108,108,111,119,
                          00};
 
-int sizeogconnectionStart1 = 5;
-int sizeogconnectionStart2 = 5;
 
-int sizeofBluePacket = 6;
-int sizeofGreenPacket = 7;
-int sizeofRedPacket = 5;
-int sizeofCyanPacket = 6;
-int sizeofPurplePacket = 8;
-int sizeofYellowPacket = 8;
+unsigned char *colorPackets[] = {blue,green,red,cyan,purple,yellow};
+int sizeOfColorPackets[] = {6,7,5,6,8,8};
+char *nicknames[] = {
+    "blue",
+    "green",
+    "red",
+    "cyan",
+    "purple",
+    "yellow"
+};
+
+
 
 #endif

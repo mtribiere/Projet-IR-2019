@@ -22,7 +22,7 @@ int getSizeFromPositionPacket(unsigned char *buff,size_t len){
 	while(buff[offset] != 0){
 
 		//Se deplacer avant le nickname
-		offset+=14;
+		offset+=18;
 
 		//Se deplacer après le nickname
 		while(buff[offset] != 0) offset++;
@@ -48,7 +48,7 @@ int getIDFromPositionPacket(unsigned char *buff,size_t len,int id){
       //printf("Check packet %d\n",counter);
 
       //Se deplacer avant le nickname
-      offset+=14;
+      offset+=18;
       //Se deplacer après le nickname (le paquet suivant)
       while(buff[offset] != 0) offset++;
       offset++;
@@ -75,7 +75,7 @@ unsigned int* getPosFromPositionPacket(unsigned char *buff,size_t len,int id){
 		while(buff[offset] != 0 && counter != id){
 
 			//Se deplacer avant le nickname
-			offset+=14;
+			offset+=18;
 
 			//Se deplacer après le nickname (le paquet suivant)
 			while(buff[offset] != 0) offset++;
@@ -90,4 +90,46 @@ unsigned int* getPosFromPositionPacket(unsigned char *buff,size_t len,int id){
 		//Retourner la valeur converti
 		return position_creator(pos);
 
+}
+
+
+/*********************
+\Permet de recuprer le nickname d'une entité dans un packet (16)
+**********************/
+
+char *getNicknameFromPositionPacket(unsigned char *buff,size_t len,int id){
+	int offset = 0;
+	int counter = 0;
+	char *toReturn;
+
+	//Tant qu'on a pas atteint la fin du paquet
+	while(buff[offset] != 0 && counter != id){
+
+		//Se deplacer avant le nickname
+		offset+=18;
+
+		//Si ce n'est pas le nickname qu'on cherche
+		if(counter != id){
+
+			//Se deplacer après le nickname (le paquet suivant)
+			while(buff[offset] != 0) offset++;
+			offset++;
+			counter++;
+		}
+
+	}
+
+	//Recuperer la taille du nickname
+	int sizeOfNickname = 0;
+	while(buff[offset+sizeOfNickname] != 0) sizeOfNickname++;
+
+	//Creer et recuperer le nickname
+	toReturn = malloc(sizeof(char)*sizeOfNickname+1);
+	for(int i = 0;i<sizeOfNickname;i++){
+		toReturn[i] = buff[offset+i];
+	}
+	toReturn[sizeOfNickname] = '\0';
+
+
+	return ((char *)toReturn);
 }
