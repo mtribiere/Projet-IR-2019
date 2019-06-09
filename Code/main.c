@@ -119,7 +119,8 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 
 				printf("Dog %d Position : (%d;%d)\n",dogInfos.entity.ID,dogInfos.entity.positionX,dogInfos.entity.positionY);
 				printf("Dog %d Target :   (%d;%d)\n",dogInfos.entity.ID,dogInfos.targetPositionX,dogInfos.targetPositionY);
-
+				printf("Dog chasing : %d\n",dogInfos.targetedSheepId);
+				printf("State : %d\n",dogInfos.state);
 				///////////Calculer la strategie
 				computeStrategy(&dogInfos,entityAround,numberOfEntity);
 
@@ -234,7 +235,9 @@ int main(int argc, char **argv)
 	dogInfos.entity.positionY = 0;
 	dogInfos.entity.ID = 0;
 	dogInfos.entity.nickname = nicknames[dogInfos.dogType];
-	dogInfos.actionRange = 100;
+	dogInfos.actionRange = 300;
+	dogInfos.targetedSheepId = 0;
+	dogInfos.state = 0;
 	dogInfos.targetPositionX = 1000;
 	dogInfos.targetPositionY = 1000;
 

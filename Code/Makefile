@@ -17,12 +17,12 @@ test: sock
 	./sock -p 2001 -o agar.io 192.168.130.114
 
 multi : sock
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.114"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.114"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.114"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.114"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.114"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.114"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 1443 -o agar.io 127.0.0.1"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 1443 -o agar.io 127.0.0.1"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 1443 -o agar.io 127.0.0.1"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 1443 -o agar.io 127.0.0.1"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 1443 -o agar.io 127.0.0.1"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 1443 -o agar.io 127.0.0.1"
 
 local: sock
 	./sock -p 1443 -o agar.io 127.0.0.1
