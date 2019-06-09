@@ -123,22 +123,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
       //Si une brebis est proche
       if(dogInfos->targetedSheepId != 0){
-        //Si elle est au dessus de nous
-        if(entityAround[tmpIdSheep].positionY <= (dogInfos->entity).positionY){
-
-          //Si on est dans la partie haute de la map
-          if((dogInfos->entity).positionY <= MAP_SIZE_Y/2){
-
-            dogInfos->targetPositionX = (dogInfos->entity).positionX;
-            dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY-(dogInfos->actionRange);
-
-          }else{//Si on est dans la partie basse
-
-            dogInfos->targetPositionX = (dogInfos->entity).positionX;
-            dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY+(dogInfos->actionRange);
-          }
-
-        }else{//Si elle est au dessous de nous
 
           //Si on est dans la partie haute de la map
           if((dogInfos->entity).positionY <= MAP_SIZE_Y/2){
@@ -151,7 +135,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
             dogInfos->targetPositionX = (dogInfos->entity).positionX;
             dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY+(dogInfos->actionRange);
 
-          }
         }
         dogInfos->state = 2;
       }else{ //Si aucune brebis visible
@@ -193,9 +176,9 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
             //Si on est dans le haut de la map
             if((dogInfos->entity).positionY <= MAP_SIZE_Y/2){
-              dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY-(dogInfos->actionRange)+2;
+              dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY-(dogInfos->actionRange)+1;
             }else{
-              dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY+(dogInfos->actionRange)-2;
+              dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY+(dogInfos->actionRange)-1;
             }
 
         }else{ // Brebis en position

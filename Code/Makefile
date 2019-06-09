@@ -22,7 +22,7 @@ multi : sock
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 1443 -o agar.io 127.0.0.1"
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 1443 -o agar.io 127.0.0.1"
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 1443 -o agar.io 127.0.0.1"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 1443 -o agar.io 127.0.0.1"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -Y -p 1443 -o agar.io 127.0.0.1"
 
 local: sock
 	./sock -p 1443 -o agar.io 127.0.0.1

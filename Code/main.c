@@ -229,19 +229,15 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 int main(int argc, char **argv)
 {
 
-	//Initialisation des variables
+	//Initialisation des varibles indépendantes du type de chien
 	dogInfos.dogType = 1;
 	dogInfos.entity.positionX = 0;
 	dogInfos.entity.positionY = 0;
 	dogInfos.entity.ID = 0;
-	dogInfos.entity.nickname = nicknames[dogInfos.dogType];
-	dogInfos.actionRange = 300;
 	dogInfos.targetedSheepId = 0;
 	dogInfos.state = 0;
 	dogInfos.targetPositionX = 1000;
 	dogInfos.targetPositionY = 1000;
-
-	numberOfEntity = 0;
 
 	int n = 0;
 
@@ -257,9 +253,8 @@ int main(int argc, char **argv)
 	if (argc < 2)
 		goto usage;
 
-
 	while (n >= 0) {
-		n = getopt(argc, argv, "hsp:P:o:");
+		n = getopt(argc, argv, "hsp:P:o:Y");
 		if (n < 0)
 			continue;
 		switch (n) {
@@ -274,6 +269,9 @@ int main(int argc, char **argv)
 			break;
 		case 'P':
 			info.http_proxy_address = optarg;
+			break;
+		case 'Y':
+			dogInfos.dogType = 5;
 			break;
 		case 'h':
 			goto usage;
@@ -314,6 +312,15 @@ int main(int argc, char **argv)
 	if (lws_client_connect_via_info(&i)); // just to prevent warning !!
 
 	forceExit=0;
+
+
+	//Initialisation des variables dependantes du type de chien
+	dogInfos.entity.nickname = nicknames[dogInfos.dogType];
+	dogInfos.actionRange = actionRanges[dogInfos.dogType];
+
+
+	numberOfEntity = 0;
+
 
 	// the main magic here !!
 	while (!forceExit) {
