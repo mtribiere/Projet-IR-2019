@@ -22,10 +22,10 @@ multi : sock
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.150"
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.150"
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.150"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -Y -p 2001 -o agar.io 192.168.130.150"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.150"
 
 local: sock
-	./sock -p 1443 -o agar.io 127.0.0.1
+	./sock -V -p 1443 -o agar.io 127.0.0.1
 
 clean:
 	rm -r *.o

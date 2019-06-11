@@ -81,8 +81,10 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 
 			////////////Mettre a jour les entité presentes
 				//Definir le nombre d'entité aux alentours
-				numberOfEntity = getSizeFromPositionPacket(buff+3,len)-1;
+				numberOfEntity = getSizeFromPositionPacket(buff+3,len);
 				printf("Nombre d'entité : %d\n",numberOfEntity);
+
+				int offset = 0;
 
 				//Récuper leurs infos et les convertir en struct
 				for(int i = 0;i<numberOfEntity;i++){
@@ -91,6 +93,7 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 
 					//Recuperer l'ID
 					tmp.ID = getIDFromPositionPacket(buff+3,len,i);
+
 
 					//Recuperer la position
 					unsigned int *pos = getPosFromPositionPacket(buff+3,len,i);
@@ -105,6 +108,8 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 
 					//DEBUG
 					printf("Entite %s ; ID : %d ; Position = (%d;%d) \n",entityAround[i].nickname,entityAround[i].ID,entityAround[i].positionX,entityAround[i].positionY);
+					
+
 
 				}
 
@@ -254,7 +259,7 @@ int main(int argc, char **argv)
 		goto usage;
 
 	while (n >= 0) {
-		n = getopt(argc, argv, "hsp:P:o:Y");
+		n = getopt(argc, argv, "hsp:P:o:J:V");
 		if (n < 0)
 			continue;
 		switch (n) {
@@ -270,7 +275,10 @@ int main(int argc, char **argv)
 		case 'P':
 			info.http_proxy_address = optarg;
 			break;
-		case 'Y':
+		case 'V':
+			dogInfos.dogType = 4;
+			break;
+		case 'J':
 			dogInfos.dogType = 5;
 			break;
 		case 'h':

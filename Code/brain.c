@@ -33,7 +33,7 @@ int isTargetPositionReached(Dog *dogInfos){
 
 int findIdOfSheep(Entity *entityAround,int numberOfEntity,int idToFind){
 
-  int idToReturn = 0;
+  int idToReturn = -1;
   for(int i = 0;i<numberOfEntity;i++){
     if(entityAround[i].ID == idToFind) idToReturn = i;
   }
@@ -60,69 +60,113 @@ int findIdOfSheep(Entity *entityAround,int numberOfEntity,int idToFind){
 ****************************/
 void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 {
-  // 1 : on considère que deux chiens jaune spawn sur la map
-  // 2 : on les fait converger vers (Longueur, Largeur/2)
-  // 3: On attaend. Dès qu'ils se voient :
-  //  Si nickname==chien and couleur==jaune
-  //    Comparer la hauteur
-  // Le plus haut augmente son paramètre state de 10
 
 
   //Si on est un chien Violet (Simple carré haut ou bas)
   if(dogInfos->dogType == 4){
-    int i;
-    //Verifier si une position est atteinte
-    if(isTargetPositionReached(dogInfos)){
-      // On attend puis
-      if(numberOfEntity >= 1)
-      {
-        for (i=0;i<numberOfEntity;i++)
-        {
-          if(entityAround[i].nickname[0] == 'd' && entityAround[i].nickname[1] == 'o' && entityAround[i].nickname[2] == 'g' && entityAround[i]->dogType == 4)
-          {
-            ...
+
+    //Si un partenaire n'a pas été trouvé
+    if(dogInfos->targetedSheepId == 0){
+
+      //Aller au meetPoint
+      dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+      dogInfos->targetPositionY = MAP_SIZE_Y/2;
+    }
+
+    //Etat initial (attente de trouver le partenaire)
+    if(dogInfos->state == 0){
+
+      //Detecter si il y a un partenaire
+      for(int i = 0;i<numberOfEntity;i++){
+        //Si c'est un partenaire
+        if(entityAround[i].nickname[0] == 'p' && entityAround[i].nickname[1] == 'u' && entityAround[i].nickname[2] == 'r' && entityAround[i].ID != (dogInfos->entity).ID){
+          //Le cibler
+          dogInfos->targetedSheepId = entityAround[i].ID;
+
+          //Determiner les rôles
+          if(entityAround[i].positionY < (dogInfos->entity).positionY){//Si il est au dessus
+            dogInfos->state = 11;
+          }else{//Si est en dessous
+            dogInfos->state = 1;
           }
+
         }
       }
+    }
+
+    //Si on a atteint le meetPoint est que un partenaire a été trouvé
+    if((dogInfos->state == 1 || dogInfos->state == 11) && isTargetPositionReached(dogInfos)){
+      //Si le partenaire est en place
+      int tmpId = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
+      printf("Parterner position : (%d;%d)\n",entityAround[tmpId].positionX,entityAround[tmpId].positionY);
+
+
+      //En X
+      if(entityAround[tmpId].positionX >= MAP_SIZE_X-ENTITY_SIZE-POSITION_MARGIN && entityAround[tmpId].positionX <= MAP_SIZE_X-ENTITY_SIZE+POSITION_MARGIN){
+        //En Y
+        if(entityAround[tmpId].positionY >= MAP_SIZE_Y/2-POSITION_MARGIN && entityAround[tmpId].positionY <= MAP_SIZE_Y/2+POSITION_MARGIN){
+          //Commencer le pattern
+          (dogInfos->state)++;
+        }
+      }
+    }
+
+    if(dogInfos->state != 0 && dogInfos->state != 1 && dogInfos->state != 11 && isTargetPositionReached(dogInfos)){
+      //Passer au point suivant
       (dogInfos->state)++;
 
       //Boucler
-      if(dogInfos->state >= 4) dogInfos->state = 0;
-      if(dogInfos->state >= 14) dogInfos->state = 10;
-    }
+      if(dogInfos->state == 7){
+        dogInfos->state = 0;
+        dogInfos->targetedSheepId = 0;
+      }
+      if(dogInfos->state == 17){
+        dogInfos->state = 0;
+        dogInfos->targetedSheepId = 0;
+      }
 
-    //Etat initial / Point 0
-    if(dogInfos->state == 0 || dogInfos->state == 10){
-      dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
-      dogInfos->targetPositionY = MAP_SIZE_Y/2;
-    }
+      /////////////////Point 1
+      if(dogInfos->state == 3){//Si on est celui du dessus
+        dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+        dogInfos->targetPositionY = MAP_SIZE_Y/2-(dogInfos->actionRange);
+      }
+      if(dogInfos->state == 13){//Si on est celui du dessous
+        dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+        dogInfos->targetPositionY = MAP_SIZE_Y/2+(dogInfos->actionRange);
+      }
 
-    //Point 1
-    if(dogInfos->state == 1 || dogInfos->state == 11){
-      dogInfos->targetPositionX = ENTITY_SIZE;
-      dogInfos->targetPositionY = MAP_SIZE_Y/2;
-    }
+      ////////////////Point 2
+      if(dogInfos->state == 4){//Si on est celui du dessus
+        dogInfos->targetPositionX = ENTITY_SIZE;
+        dogInfos->targetPositionY = MAP_SIZE_Y/2-(dogInfos->actionRange);
+      }
+      if(dogInfos->state == 14){//Si on est celui du dessous
+        dogInfos->targetPositionX = ENTITY_SIZE;
+        dogInfos->targetPositionY = MAP_SIZE_Y/2+(dogInfos->actionRange);
+      }
 
-    //Point 2 (on regardera si le chien doit revenir par au-dessus ou par en dessous)
-    if(dogInfos->state == 2){
-      dogInfos->targetPositionX = ENTITY_SIZE;
-      dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;
-    }
-    else if(dogInfos->state == 12){
-      dogInfos->targetPositionX = ENTITY_SIZE;
-      dogInfos->targetPositionY = ENTITY_SIZE;
-    }
 
-    //Point 3 (on regardera si le chien doit revenir par au-dessus ou par en dessous))
-    if(dogInfos->state == 3){
-      dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
-      dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;
-    }
-    else if(dogInfos->state == 13){
-      dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
-      dogInfos->targetPositionY = ENTITY_SIZE;
-  }
+      //////////////Point 3
+      if(dogInfos->state == 5){//Si on est celui du dessus
+        dogInfos->targetPositionX = ENTITY_SIZE;
+        dogInfos->targetPositionY = ENTITY_SIZE;
+      }
+      if(dogInfos->state == 15){//Si on est celui du dessous
+        dogInfos->targetPositionX = ENTITY_SIZE;
+        dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;
+      }
 
+      ////////////Point 4
+      if(dogInfos->state == 6){//Si on est celui du dessus
+        dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+        dogInfos->targetPositionY = ENTITY_SIZE;
+      }
+      if(dogInfos->state == 16){//Si on est celui du dessous
+        dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+        dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;
+      }
+    }
+}
   //Si on est un chien Vert (Ramener les brebis sur la ligne centrale)
   if(dogInfos->dogType == 1)
   {
