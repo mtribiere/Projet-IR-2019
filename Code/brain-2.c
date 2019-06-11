@@ -40,10 +40,10 @@ int isYellowIn(Dog *dogInfos,Entity *entityAround,int numberOfEntity){
 
   for (i=0;i < numberOfEntity;i++){
     // Si l'entité est un jaune
-    if(entityAround[i]. == idToFind){
-
+    if(dogInfos->dogType == 5){
+      toReturn = 1;
     }
-
+  }
   return toReturn;
 }
 
@@ -252,7 +252,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
           dogInfos->targetPositionY = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
         }
       }
-    }else{//Si on est en chasse
+    }else{ // Si on est en exploration
       //Si on est pas encore aligné, on s'aligne entre la brebis et le centre
       if(dogInfos->state == 1 && isTargetPositionReached(dogInfos)){
 
@@ -261,7 +261,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         int angleRatio = (MAP_SIZE_Y/2 - entityAround[tmpIdSheep].positionY) / (MAP_SIZE_X/2 - entityAround[tmpIdSheep].positionX);
 
         // Si on est à gauche du centre
-        if((dogInfos->entity).positionX) <= MAP_SIZE_X/2){
+        if((dogInfos->entity).positionX <= MAP_SIZE_X/2){
         dogInfos->targetPositionX = entityAround[tmpIdSheep].positionX + sqrt(dogInfos->actionRange / (1+pow(angleRatio,2)));
       }else{
         dogInfos->targetPositionX = entityAround[tmpIdSheep].positionX - sqrt(dogInfos->actionRange / (1+pow(angleRatio,2)));
@@ -309,12 +309,26 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       }
     if(dogInfos->state == 4 && isTargetPositionReached(dogInfos)){
       // On retient le nombre de jaunes dans notre champ de vision
-      // On attend qu'un jaune sorte de notre champ de vision avant de bouger
       int numberOfEntityTmp = numberOfEntity;
-      if(numberOfEntityTmp > 0 && isYellowIn(dogInfos){
 
-      }else{ // S'il n'y a aucun jaune dans le champ de vision
+      // S'il y a au moins un jaune dans notre champ de vision
+      if(numberOfEntityTmp > 0 && isYellowIn(dogInfos,entityAround,numberOfEntity)){
+        // On attend qu'un jaune sorte de notre champ de vision avant de bouger
+        if (numberOfEntity == numberOfEntityTmp){
+          dogInfos->targetPositionX = (dogInfos->entity).positionX;
+          dogInfos->targetPositionY = (dogInfos->entity).positionY;
+        }else{ // Une fois que c'est fait on repart en exploration
+          dogInfos->state = 0;
+          dogInfos->targetPositionX = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
+          dogInfos->targetPositionY = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
 
+          printf("Fin de la chasse\n");
+        }
+      }else{ // Sinon s'il n'y a aucun jaune dans le champ de vision
+            // On attend qu'un jaune revienne pour lui indiquer la direction de la brebis
+        dogInfos->targetPositionX = (dogInfos->entity).positionX;
+        dogInfos->targetPositionY = (dogInfos->entity).positionY;
       }
     }
+  }
 }
