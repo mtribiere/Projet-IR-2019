@@ -69,9 +69,11 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
 
   //Si on est un chien Vert ou Violet (Ramener les brebis directement à l'enclos)
+
+  // FREINE LES VERTS STP ILS SONT TROP RAPIDES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
   if(dogInfos->dogType == 1 || dogInfos->dogType == 4)
   {
-
     //Si on est en recherche de brebis
     if(dogInfos->state == 0){
 
@@ -82,7 +84,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         //Si c'est une brebis
         if(entityAround[i].nickname[0] == 'b' && entityAround[i].nickname[1] == 'o' && entityAround[i].nickname[2] == 't'){
           //Si elle n'est pas déjà placée
-          if(entityAround[i].positionX < (MAP_SIZE_X/10)-PUSHING_MARGIN || (entityAround[i].positionY > (MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+PUSHING_MARGIN || entityAround[i].positionY) < (MAP_SIZE_Y/2)-(MAP_SIZE_X/10)-PUSHING_MARGIN){
+          if(entityAround[i].positionX >= ((MAP_SIZE_X/10)-PUSHING_MARGIN) || entityAround[i].positionY > ((MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+PUSHING_MARGIN) || entityAround[i].positionY < ((MAP_SIZE_Y/2)-(MAP_SIZE_X/10)-PUSHING_MARGIN)){
             //La cibler
             dogInfos->targetedSheepId = entityAround[i].ID;
             tmpIdSheep = i;
@@ -152,7 +154,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         // ET (entityAround[i].positionY >= (MAP_SIZE_Y/2)-(MAP_SIZE_X/10)-PUSHING_MARGIN)
 
         //Si la brebis n'est pas dans l'enclos
-        if(entityAround[i].positionX < (MAP_SIZE_X/10)-PUSHING_MARGIN || (entityAround[i].positionY > (MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+PUSHING_MARGIN || entityAround[i].positionY) < (MAP_SIZE_Y/2)-(MAP_SIZE_X/10)-PUSHING_MARGIN){
+        if(entityAround[tmpIdSheep].positionX >= ((MAP_SIZE_X/10)-PUSHING_MARGIN) || entityAround[tmpIdSheep].positionY > ((MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+PUSHING_MARGIN) || entityAround[tmpIdSheep].positionY < ((MAP_SIZE_Y/2)-(MAP_SIZE_X/10)-PUSHING_MARGIN)){
 
             //Continuer de pousser la brebis en réactualisant les paramètres
             int angleRatio = entityAround[tmpIdSheep].positionY / entityAround[tmpIdSheep].positionX;
@@ -166,11 +168,15 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
               dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY + angleRatio*sqrt(dogInfos->actionRange / (1 + pow(angleRatio,2)));
             }
 
-        }else{ // Brebis en position
+        }else{ // Brebis dans l'enclos
 
           //Arreter la chasse
           dogInfos->state = 0;
           dogInfos->targetedSheepId = 0;
+
+          dogInfos->targetPositionX = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
+          dogInfos->targetPositionY = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
+
 
           //Partir ailleurs
           printf("Fin de la chasse\n");
@@ -179,4 +185,52 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
     }
   }
+
+/*
+  // Si on est un chien bleu : on explore aléatoirement
+  // Lorsqu'on voit une brebis : on revient vers le centre jusqu'à voir au moins un Jaune et on s'arrête
+  // Ce jaune partira dans la direction du bleu  (voir Si on est un jaune), lorsqu'il sera sorti du champ de vision (numberOfEntity - 1) on repart en exploration random
+  if(dogInfos->dogType == 0){
+    //Si on est en recherche de brebis
+    if(dogInfos->state == 0){
+
+      int tmpIdSheep;
+      //Chercher si une brebis est visible
+      for(int i = 0;i<numberOfEntity;i++){
+
+        //Si c'est une brebis
+        if(entityAround[i].nickname[0] == 'b' && entityAround[i].nickname[1] == 'o' && entityAround[i].nickname[2] == 't'){
+          //Si elle n'est pas déjà placée
+          if(entityAround[i].positionX < ((MAP_SIZE_X/10)-PUSHING_MARGIN) || entityAround[i].positionY > ((MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+PUSHING_MARGIN) || entityAround[i].positionY < ((MAP_SIZE_Y/2)-(MAP_SIZE_X/10)-PUSHING_MARGIN)){
+            //La cibler
+            dogInfos->targetedSheepId = entityAround[i].ID;
+            tmpIdSheep = i;
+
+            printf("Y Sheep : %d\n",entityAround[i].positionY);
+          }
+        }
+      }
+
+
+      //Si une brebis est proche
+      if(dogInfos->targetedSheepId != 0){
+
+          //Où que nous soyons sur la map
+          dogInfos->targetPositionX = entityAround[tmpIdSheep].positionX;
+          dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY;
+          if(isTargetPositionReached(dogInfos)){
+            dogInfos->state = 1;
+          }
+        }
+
+      }else{ //Si aucune brebis visible
+        //Si on est arrivé a destination
+        if(isTargetPositionReached(dogInfos)){
+          dogInfos->targetPositionX = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
+          dogInfos->targetPositionY = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
+        }
+      }
+    }else{//Si on est en chasse
+  }
+*/
 }
