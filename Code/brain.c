@@ -60,41 +60,67 @@ int findIdOfSheep(Entity *entityAround,int numberOfEntity,int idToFind){
 ****************************/
 void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 {
-  //Si on est un chien Jaune (Simple carré)
-  if(dogInfos->dogType == 5){
+  // 1 : on considère que deux chiens jaune spawn sur la map
+  // 2 : on les fait converger vers (Longueur, Largeur/2)
+  // 3: On attaend. Dès qu'ils se voient :
+  //  Si nickname==chien and couleur==jaune
+  //    Comparer la hauteur
+  // Le plus haut augmente son paramètre state de 10
 
+
+  //Si on est un chien Violet (Simple carré haut ou bas)
+  if(dogInfos->dogType == 4){
+    int i;
     //Verifier si une position est atteinte
     if(isTargetPositionReached(dogInfos)){
+      // On attend puis
+      if(numberOfEntity >= 1)
+      {
+        for (i=0;i<numberOfEntity;i++)
+        {
+          if(entityAround[i].nickname[0] == 'd' && entityAround[i].nickname[1] == 'o' && entityAround[i].nickname[2] == 'g' && entityAround[i]->dogType == 4)
+          {
+            ...
+          }
+        }
+      }
       (dogInfos->state)++;
 
       //Boucler
       if(dogInfos->state >= 4) dogInfos->state = 0;
+      if(dogInfos->state >= 14) dogInfos->state = 10;
     }
 
     //Etat initial / Point 0
-    if(dogInfos->state == 0){
+    if(dogInfos->state == 0 || dogInfos->state == 10){
       dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
       dogInfos->targetPositionY = MAP_SIZE_Y/2;
     }
 
     //Point 1
-    if(dogInfos->state == 1){
+    if(dogInfos->state == 1 || dogInfos->state == 11){
       dogInfos->targetPositionX = ENTITY_SIZE;
       dogInfos->targetPositionY = MAP_SIZE_Y/2;
     }
 
-    //Point 2
+    //Point 2 (on regardera si le chien doit revenir par au-dessus ou par en dessous)
     if(dogInfos->state == 2){
       dogInfos->targetPositionX = ENTITY_SIZE;
       dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;
     }
+    else if(dogInfos->state == 12){
+      dogInfos->targetPositionX = ENTITY_SIZE;
+      dogInfos->targetPositionY = ENTITY_SIZE;
+    }
 
-    //Point 3
+    //Point 3 (on regardera si le chien doit revenir par au-dessus ou par en dessous))
     if(dogInfos->state == 3){
       dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
       dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;
     }
-
+    else if(dogInfos->state == 13){
+      dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+      dogInfos->targetPositionY = ENTITY_SIZE;
   }
 
   //Si on est un chien Vert (Ramener les brebis sur la ligne centrale)
