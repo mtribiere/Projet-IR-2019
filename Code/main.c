@@ -82,7 +82,6 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 			////////////Mettre a jour les entité presentes
 				//Definir le nombre d'entité aux alentours
 				numberOfEntity = getSizeFromPositionPacket(buff+3,len);
-				printf("Nombre d'entité : %d\n",numberOfEntity);
 
 				int offset = 0;
 
@@ -94,23 +93,24 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 					//Recuperer l'ID
 					tmp.ID = getIDFromPositionPacket(buff+3,len,i);
 
+					//Verifier que ce n'est pas nous
+					if(tmp.ID != dogInfos.entity.ID){
 
-					//Recuperer la position
-					unsigned int *pos = getPosFromPositionPacket(buff+3,len,i);
-					tmp.positionX = pos[0];
-					tmp.positionY = pos[1];
+						//Recuperer la position
+						unsigned int *pos = getPosFromPositionPacket(buff+3,len,i);
+						tmp.positionX = pos[0];
+						tmp.positionY = pos[1];
+						free(pos);
 
-					//Recuperer le nickname
-					tmp.nickname = getNicknameFromPositionPacket(buff+3,len,i);
+						//Recuperer le nickname
+						tmp.nickname = getNicknameFromPositionPacket(buff+3,len,i);
 
-					//Ajouter l'entité au tableau
-					entityAround[i] = tmp;
+						//Ajouter l'entité au tableau
+						entityAround[i-offset] = tmp;
 
-					//DEBUG
-					printf("Entite %s ; ID : %d ; Position = (%d;%d) \n",entityAround[i].nickname,entityAround[i].ID,entityAround[i].positionX,entityAround[i].positionY);
-					
-
-
+					}else{//Sauter l'update
+						offset++;
+					}
 				}
 
 				////////////Chercher notre position dans le packet
@@ -121,11 +121,21 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 				unsigned int *posCurrent = getPosFromPositionPacket(buff+3,len,idInPositionPacket);
 				dogInfos.entity.positionX = posCurrent[0];
 				dogInfos.entity.positionY = posCurrent[1];
+				free(posCurrent);
 
+				////////////Retirer les UPDATES qui nous concernent
+				numberOfEntity -= offset;
+
+				////////////DEBUG
+				printf("Number of entity : %d\n",numberOfEntity);
+				for(int i = 0;i<numberOfEntity;i++){
+					printf("Entite %s ; ID : %d ; Position = (%d;%d)\n",entityAround[i].nickname,entityAround[i].ID,entityAround[i].positionX,entityAround[i].positionY);
+				}
 				printf("Dog %d Position : (%d;%d)\n",dogInfos.entity.ID,dogInfos.entity.positionX,dogInfos.entity.positionY);
 				printf("Dog %d Target :   (%d;%d)\n",dogInfos.entity.ID,dogInfos.targetPositionX,dogInfos.targetPositionY);
 				printf("Dog chasing : %d\n",dogInfos.targetedSheepId);
 				printf("State : %d\n",dogInfos.state);
+
 				///////////Calculer la strategie
 				computeStrategy(&dogInfos,entityAround,numberOfEntity);
 

@@ -98,8 +98,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     if((dogInfos->state == 1 || dogInfos->state == 11) && isTargetPositionReached(dogInfos)){
       //Si le partenaire est en place
       int tmpId = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
-      printf("Parterner position : (%d;%d)\n",entityAround[tmpId].positionX,entityAround[tmpId].positionY);
-
 
       //En X
       if(entityAround[tmpId].positionX >= MAP_SIZE_X-ENTITY_SIZE-POSITION_MARGIN && entityAround[tmpId].positionX <= MAP_SIZE_X-ENTITY_SIZE+POSITION_MARGIN){
