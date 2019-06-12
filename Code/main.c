@@ -251,8 +251,8 @@ int main(int argc, char **argv)
 	dogInfos.entity.ID = 0;
 	dogInfos.targetedSheepId = 0;
 	dogInfos.state = 0;
-	dogInfos.targetPositionX = 1000;
-	dogInfos.targetPositionY = 1000;
+	dogInfos.targetPositionX = 0;
+	dogInfos.targetPositionY = 0;
 
 	int n = 0;
 
@@ -269,7 +269,7 @@ int main(int argc, char **argv)
 		goto usage;
 
 	while (n >= 0) {
-		n = getopt(argc, argv, "hsp:P:o:J:V:B");
+		n = getopt(argc, argv, "hsp:P:o:VBJ");
 		if (n < 0)
 			continue;
 		switch (n) {
@@ -296,6 +296,7 @@ int main(int argc, char **argv)
 			break;
 		case 'h':
 			goto usage;
+			break;
 		}
 	}
 

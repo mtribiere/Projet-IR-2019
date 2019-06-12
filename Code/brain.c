@@ -60,6 +60,33 @@ int isInBase(int positionX,int positionY){
   return toReturn;
 }
 
+//0 : X , 1 : Y
+int positionClamp(int targetPosition,int type){
+    int positionToReturn = targetPosition;
+
+    //Si c'est une position X
+    if(type == 0){
+
+        //Si inférieur à la limite
+        if(targetPosition < ENTITY_SIZE) positionToReturn = ENTITY_SIZE;
+        //Si supérieur à la limite
+        if(targetPosition > MAP_SIZE_X - ENTITY_SIZE) positionToReturn = MAP_SIZE_X-ENTITY_SIZE;
+
+    }
+
+    //Si c'est un positionY
+    if(type == 1){
+
+        //Si inférieur à la limite
+        if(targetPosition < ENTITY_SIZE) positionToReturn = ENTITY_SIZE;
+        //Si supérieur à la limite
+        if(targetPosition > MAP_SIZE_Y - ENTITY_SIZE) positionToReturn = MAP_SIZE_Y-ENTITY_SIZE;
+
+    }
+
+    return positionToReturn;
+}
+
 int findIdOfSheep(Entity *entityAround,int numberOfEntity,int idToFind){
 
   int idToReturn = -1;
@@ -113,9 +140,9 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
           dogInfos->targetedSheepId = entityAround[i].ID;
 
           //Determiner les rôles
-          if(entityAround[i].positionY < (dogInfos->entity).positionY){//Si il est au dessus
+          if(entityAround[i].ID < (dogInfos->entity).ID){//Si son ID est plus petit
             dogInfos->state = 11;
-          }else{//Si est en dessous
+          }else{//Si il est plus grand
             dogInfos->state = 1;
           }
 
@@ -176,21 +203,21 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       //////////////Point 3
       if(dogInfos->state == 5){//Si on est celui du dessus
         dogInfos->targetPositionX = ENTITY_SIZE;
-        dogInfos->targetPositionY = ENTITY_SIZE;
+        dogInfos->targetPositionY = MAP_SIZE_Y/2-MAP_SIZE_X/10;
       }
       if(dogInfos->state == 15){//Si on est celui du dessous
         dogInfos->targetPositionX = ENTITY_SIZE;
-        dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;
+        dogInfos->targetPositionY = MAP_SIZE_Y/2+MAP_SIZE_X/10;
       }
 
       ////////////Point 4
       if(dogInfos->state == 6){//Si on est celui du dessus
         dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
-        dogInfos->targetPositionY = ENTITY_SIZE;
+        dogInfos->targetPositionY = MAP_SIZE_Y/2-MAP_SIZE_X/10;
       }
       if(dogInfos->state == 16){//Si on est celui du dessous
         dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
-        dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;
+        dogInfos->targetPositionY = MAP_SIZE_Y/2+MAP_SIZE_X/10;
       }
     }
 }
@@ -230,19 +257,20 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         //Si il est au dessus de la limite
         if(entityAround[tmpIdSheep].positionY < MAP_SIZE_Y/2){
 
-          dogInfos->targetPositionX = entityAround[tmpIdSheep].positionX;
-          dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY - (dogInfos->actionRange) + 2;
+          dogInfos->targetPositionX = positionClamp(entityAround[tmpIdSheep].positionX,0);
+          dogInfos->targetPositionY = positionClamp(entityAround[tmpIdSheep].positionY - (dogInfos->actionRange) + 2,1);
 
         }else{//Si il est au dessous de la limite
 
-          dogInfos->targetPositionX = entityAround[tmpIdSheep].positionX;
-          dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY + (dogInfos->actionRange) - 2;
+          dogInfos->targetPositionX = positionClamp(entityAround[tmpIdSheep].positionX,0);
+          dogInfos->targetPositionY = positionClamp(entityAround[tmpIdSheep].positionY + (dogInfos->actionRange) - 2,1);
 
         }
       }else{//Si il est en position ou que qu'il a atteint le milieu
         //Arreter la chasse
         dogInfos->state = 0;
         dogInfos->targetedSheepId = 0;
+
       }
     }else{//Si on cherche une brebis
 
@@ -252,6 +280,22 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         dogInfos->targetPositionY = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
       }
 
+      //Eviter de percuter un autre blanc
+      for(int i = 0;i<numberOfEntity;i++){
+        //Si il y a un mouton
+        if(entityAround[i].nickname[0] == 'b' && entityAround[i].nickname[1] == 'o' && entityAround[i].nickname[2] == 't'){
+
+          //L'éviter
+          dogInfos->targetPositionX = positionClamp((dogInfos->entity).positionX+2*(dogInfos->actionRange),0);
+
+          if((dogInfos->entity).positionY < MAP_SIZE_Y/2){//Si on est en haut
+              dogInfos->targetPositionY = (dogInfos->entity).positionY-(dogInfos->actionRange);
+          }else{ //Si on est en bas
+            dogInfos->targetPositionY = positionClamp((dogInfos->entity).positionY+(dogInfos->actionRange),1);
+          }
+
+        }
+      }
     }
   }
 }
