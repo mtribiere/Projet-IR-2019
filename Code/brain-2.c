@@ -209,6 +209,11 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
   }
 
 
+
+
+
+
+
   // Si on est un chien bleu : on explore aléatoirement
   // Lorsqu'on voit une brebis : on revient vers le centre jusqu'à voir au moins un Jaune et on s'arrête
   // Ce jaune partira dans la direction du bleu  (voir Si on est un jaune), lorsqu'il sera sorti du champ de vision (numberOfEntity - 1) on repart en exploration random
@@ -219,46 +224,56 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       int tmpIdSheep;
       //Chercher si une brebis est visible
       for(int i = 0;i<numberOfEntity;i++){
-
+        printf("\n\n Entity Around n° : %d detected \n\n",i);
         //Si c'est une brebis
         if(entityAround[i].nickname[0] == 'b' && entityAround[i].nickname[1] == 'o' && entityAround[i].nickname[2] == 't'){
+          printf("\n\n Il s'agit d'une brebis ");
+
           //Si elle n'est pas déjà placée
           if(entityAround[i].positionX < ((MAP_SIZE_X/10)-PUSHING_MARGIN) || entityAround[i].positionY > ((MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+PUSHING_MARGIN) || entityAround[i].positionY < ((MAP_SIZE_Y/2)-(MAP_SIZE_X/10)-PUSHING_MARGIN)){
             //La cibler
+            printf("non placée \n\n");
             dogInfos->targetedSheepId = entityAround[i].ID;
             tmpIdSheep = i;
 
-            printf("Y Sheep : %d\n",entityAround[i].positionY);
-          }
+            printf("\n\n Targeted Sheep Id : %d\n\n",entityAround[i].ID);
+          }else printf("déjà placée \n\n");
         }
       }
 
 
       //Si une brebis est proche
-      if(dogInfos->targetedSheepId != 0){
-
+      if(dogInfos->targetedSheepId != 0 && dogInfos->targetedSheepId != (dogInfos->entity).ID){
+          printf("\n\n Brebis détectée d' Id : %d\n\n",dogInfos->targetedSheepId);
           //Où que nous soyons sur la map
           dogInfos->targetPositionX = entityAround[tmpIdSheep].positionX;
           dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY;
           if(isTargetPositionReached(dogInfos)){
             dogInfos->state = 1;
+            printf("\n\n On atteint la position pour passer à l'état 1...\n\n");
           }
         }
 
-      }else{ //Si aucune brebis visible
+      }
+      if(dogInfos->state == 0 && dogInfos->targetedSheepId == 0){ //Si aucune brebis visible
         //Si on est arrivé a destination
         if(isTargetPositionReached(dogInfos)){
+          printf("\n\n Aucune brebis détectée. Génération de nouvelles coordonnées aléatoires... \n\n");
           dogInfos->targetPositionX = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
           dogInfos->targetPositionY = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
         }
       }
-    }else{ // Si on est en exploration
-      //Si on est pas encore aligné, on s'aligne entre la brebis et le centre
-      if(dogInfos->state == 1 && isTargetPositionReached(dogInfos)){
+    }
 
+    // Si on est en exploration
+    //Si on est pas encore aligné, on s'aligne entre la brebis et le centre
+      if(dogInfos->state == 1){
+
+        printf("\n\n On rentre dans l'état 1 \n\n");
         int tmpIdSheep = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
 
         int angleRatio = (MAP_SIZE_Y/2 - entityAround[tmpIdSheep].positionY) / (MAP_SIZE_X/2 - entityAround[tmpIdSheep].positionX);
+        printf("\n\n Angle ratio et tmpIDSheep déterminés \n\n");
 
         // Si on est à gauche du centre
         if((dogInfos->entity).positionX <= MAP_SIZE_X/2){
@@ -266,6 +281,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       }else{
         dogInfos->targetPositionX = entityAround[tmpIdSheep].positionX - sqrt(dogInfos->actionRange / (1+pow(angleRatio,2)));
       }
+      printf("\n\n Coordonnées en X déterminées \n\n");
 
         //Si on est dans le haut de la map
         if((dogInfos->entity).positionY <= MAP_SIZE_Y/2){
@@ -273,41 +289,47 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         }else{
           dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY + angleRatio*sqrt(dogInfos->actionRange / (1 + pow(angleRatio,2)));
         }
+        printf("\n\n Coordonnées en Y déterminées \n\n");
 
-        dogInfos->state=2;
-
+        if(isTargetPositionReached(dogInfos)){
+        dogInfos->state=2; printf("\n\n Alignement des constellations \n\n");
+        }
       }
 
       //Si on est aligné
-      if(dogInfos->state == 2 && isTargetPositionReached(dogInfos))
-        dogInfos->state = 3; // On passe a l'état de déplacement du chien à proximité du centre
+      if(dogInfos->state == 2) {dogInfos->state = 3; // On passe a l'état de déplacement du chien à proximité du centre
+      printf("\n\n Cap sur le centre \n\n");}
 
       //Etat de déplacement du chien à proximité du centre
       if(dogInfos->state == 3){
 
         int tmpIdSheep = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
+        int angleRatio = (MAP_SIZE_Y/2 - entityAround[tmpIdSheep].positionY) / (MAP_SIZE_X/2 - entityAround[tmpIdSheep].positionX);
+        printf("\n\n Angle ratio et tmpIDSheep déterminés à nouveau \n\n");
 
         // Si on est à gauche du centre
-        if((dogInfos->entity).positionX <= MAP_SIZE_Y/2){
-          dogInfos->targetPositionX = entityAround[tmpIdSheep].positionX - PUSHING_MARGIN;
+        if((dogInfos->entity).positionX <= MAP_SIZE_X/2){
+          dogInfos->targetPositionX = MAP_SIZE_X/2 - sqrt(dogInfos->actionRange / (1+pow(angleRatio,2)));
         }else{
-          dogInfos->targetPositionX = entityAround[tmpIdSheep].positionX + PUSHING_MARGIN;
+          dogInfos->targetPositionX = MAP_SIZE_X/2 + sqrt(dogInfos->actionRange / (1+pow(angleRatio,2)));
         }
 
         //Si on est dans le haut de la map
         if((dogInfos->entity).positionY <= MAP_SIZE_Y/2){
-          dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY - PUSHING_MARGIN;
+          dogInfos->targetPositionY = MAP_SIZE_Y/2 - angleRatio*sqrt(dogInfos->actionRange / (1+pow(angleRatio,2)));
         }else{
-          dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY + PUSHING_MARGIN;
+          dogInfos->targetPositionY = MAP_SIZE_Y/2 + angleRatio*sqrt(dogInfos->actionRange / (1+pow(angleRatio,2)));
         }
+        if(isTargetPositionReached(dogInfos)){
+          // On est arrivé à proximité du centre
+          printf("\n\n On est arrivé à proximité du centre \n\n");
+          //Arreter le déplacement
+          dogInfos->state = 4;
+          dogInfos->targetedSheepId = 0;
+        }
+    }
 
-    }else{ // On est arrivé à proximité du centre
-
-      //Arreter le déplacement
-      dogInfos->state = 4;
-      dogInfos->targetedSheepId = 0;
-      }
-    if(dogInfos->state == 4 && isTargetPositionReached(dogInfos)){
+    if(dogInfos->state == 4){
       // On retient le nombre de jaunes dans notre champ de vision
       int numberOfEntityTmp = numberOfEntity;
 
@@ -330,5 +352,4 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         dogInfos->targetPositionY = (dogInfos->entity).positionY;
       }
     }
-  }
 }
