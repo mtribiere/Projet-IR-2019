@@ -12,7 +12,7 @@
 
 
 int generateRandomPosition(int lower,int upper){
-  srandom(time(NULL));
+  srandom(time(0));
   return (rand() % (upper - lower + 1)) + lower;
 }
 
@@ -180,11 +180,15 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         if(entityAround[i].nickname[0] == 'b' && entityAround[i].nickname[1] == 'o' && entityAround[i].nickname[2] == 't'){
           //Si elle n'est pas déjà placé
           if(!(entityAround[i].positionY>= (MAP_SIZE_Y/2)-PUSHING_MARGIN && entityAround[i].positionY <= (MAP_SIZE_Y/2)+PUSHING_MARGIN)){
-            //La cibler
-            dogInfos->targetedSheepId = entityAround[i].ID;
-            tmpIdSheep = i;
-
-            printf("Y Sheep : %d\n",entityAround[i].positionY);
+            //Si elle n'est pas dans la base
+            if(!(entityAround[i].positionX >= 0 && entityAround[i].positionX <= MAP_SIZE_X/10)){
+              if(!(entityAround[i].positionY >= MAP_SIZE_Y/2-MAP_SIZE_X/10 && entityAround[i].positionY <= MAP_SIZE_Y/2+MAP_SIZE_X/10)){
+                //La cibler
+                dogInfos->targetedSheepId = entityAround[i].ID;
+                tmpIdSheep = i;
+                
+              }
+            }
           }
         }
       }
@@ -235,18 +239,18 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       if(dogInfos->state == 4){
 
         int tmpIdSheep = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
-
+        printf("Current ID : %d\n",tmpIdSheep);
         //Si la brebis n'est pas au milieu
-        if(!(entityAround[tmpIdSheep].positionY >= MAP_SIZE_Y/2-PUSHING_MARGIN && entityAround[tmpIdSheep].positionY <= MAP_SIZE_Y/2+PUSHING_MARGIN)){
+        if((!(entityAround[tmpIdSheep].positionY >= MAP_SIZE_Y/2-PUSHING_MARGIN && entityAround[tmpIdSheep].positionY <= MAP_SIZE_Y/2+PUSHING_MARGIN)) || tmpIdSheep == -1){
 
             //Continuer de pousser la brebis
             dogInfos->targetPositionX = entityAround[tmpIdSheep].positionX;
 
             //Si on est dans le haut de la map
             if((dogInfos->entity).positionY <= MAP_SIZE_Y/2){
-              dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY-(dogInfos->actionRange)+1;
+              dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY-(dogInfos->actionRange)+2;
             }else{
-              dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY+(dogInfos->actionRange)-1;
+              dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY+(dogInfos->actionRange)-2;
             }
 
         }else{ // Brebis en position
@@ -256,6 +260,14 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
           dogInfos->targetedSheepId = 0;
 
           //Partir ailleurs
+          dogInfos->targetPositionX = (dogInfos->entity).positionX;
+
+          //Si on est en haut
+          if((dogInfos->entity).positionY < MAP_SIZE_Y/2){
+            dogInfos->targetPositionY = (dogInfos->entity).positionY-4*ENTITY_SIZE;
+          }else{
+            dogInfos->targetPositionY = (dogInfos->entity).positionY+4*ENTITY_SIZE;
+          }
           printf("Fin de la chasse\n");
         }
       }
