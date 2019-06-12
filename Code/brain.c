@@ -238,9 +238,16 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
             //Si elle n'est pas dans la base
             if(!isInBase(entityAround[i].positionX,entityAround[i].positionY)){
-                //La cibler
-                dogInfos->targetedSheepId = entityAround[i].ID;
-                dogInfos->state = 1;
+
+              //Si elle n'est pas proche d'un bord
+              if(!(entityAround[i].positionX < ENTITY_SIZE+(dogInfos->actionRange) && entityAround[i].positionX > MAP_SIZE_X-ENTITY_SIZE-(dogInfos->actionRange))){
+                if(!(entityAround[i].positionY < ENTITY_SIZE+(dogInfos->actionRange) && entityAround[i].positionY > MAP_SIZE_Y-ENTITY_SIZE-(dogInfos->actionRange))){
+
+                  //La cibler
+                  dogInfos->targetedSheepId = entityAround[i].ID;
+                  dogInfos->state = 1;
+                }
+              }
             }
           }
         }
@@ -274,7 +281,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       }
     }else{//Si on cherche une brebis
 
-      //Si on a atteint la position target
+      //Si on a atteint la position target ou qu'on ne bouge pas
       if(isTargetPositionReached(dogInfos) || (dogInfos->targetPositionX == 0 && dogInfos->targetPositionY == 0)){
         dogInfos->targetPositionX = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
         dogInfos->targetPositionY = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
