@@ -4,7 +4,7 @@
 #define MAXENTITY 2000
 #define ENTITY_SIZE 100
 #define POSITION_MARGIN 2
-#define PUSHING_MARGIN 50
+#define PUSHING_MARGIN 8
 
 typedef struct entity {
   unsigned int positionX;
