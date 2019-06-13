@@ -22,8 +22,8 @@ test: sock
 multi : sock
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.150"
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.150"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.150"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.150"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -V -p 2001 -o agar.io 192.168.130.150"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -V -p 2001 -o agar.io 192.168.130.150"
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -V -p 2001 -o agar.io 192.168.130.150"
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -V -p 2001 -o agar.io 192.168.130.150"
 

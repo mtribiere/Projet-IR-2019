@@ -119,7 +119,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
 
   //Si on est un chien Violet (Simple carré haut ou bas)
-  if(dogInfos->dogType == 4){
+  if(dogInfos->dogType == 1){
 
     //Si un partenaire n'a pas été trouvé
     if(dogInfos->targetedSheepId == 0){
@@ -135,7 +135,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       //Detecter si il y a un partenaire
       for(int i = 0;i<numberOfEntity;i++){
         //Si c'est un partenaire
-        if(entityAround[i].nickname[0] == 'p' && entityAround[i].nickname[1] == 'u' && entityAround[i].nickname[2] == 'r' && entityAround[i].ID != (dogInfos->entity).ID){
+        if(entityAround[i].nickname[0] == 'g' && entityAround[i].nickname[1] == 'r' && entityAround[i].nickname[2] == 'e' && entityAround[i].ID != (dogInfos->entity).ID){
           //Le cibler
           dogInfos->targetedSheepId = entityAround[i].ID;
 
@@ -222,7 +222,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     }
 }
   //Si on est un chien Vert (Ramener les brebis sur la ligne centrale)
-  if(dogInfos->dogType == 1)
+  if(dogInfos->dogType == 4)
   {
 
     //Si on est en recherche de brebis
