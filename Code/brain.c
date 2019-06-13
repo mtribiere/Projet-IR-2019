@@ -223,6 +223,8 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
   //Si on est un chien Vert (Ramener les brebis sur la ligne centrale)
   if(dogInfos->dogType == 4)
   {
+    static int backTargetedSheepX;
+    static int backTargetedSheepY;
 
     //Si on est en recherche de brebis
     if(dogInfos->state == 0){
@@ -245,6 +247,19 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
                   //La cibler
                   dogInfos->targetedSheepId = entityAround[i].ID;
                   dogInfos->state = 1;
+                  backTargetedSheepX = entityAround[i].positionX;
+                  backTargetedSheepY = entityAround[i].positionY;
+
+                  //La contourner / Etape 1
+                  //Si elle est a notre droite
+                  if(backTargetedSheepX >= (dogInfos->entity).positionX){
+                    dogInfos->targetPositionX = backTargetedSheepX-5*(dogInfos->actionRange);
+                    dogInfos->targetPositionY = (dogInfos->entity).positionY;
+                  }else{ // Si elle est a notre gauche
+                    dogInfos->targetPositionX = backTargetedSheepX+5*(dogInfos->actionRange);
+                    dogInfos->targetPositionY = (dogInfos->entity).positionY;
+                  }
+
                 }
               }
             }
@@ -253,8 +268,40 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       }
     }
 
+    //Contournement / Etape 2 / Réaligmement
+    if(dogInfos->state == 1){
+
+      //Si on a atteint la position précendente
+      if(isTargetPositionReached(dogInfos)){
+
+        //Passer a l'état suivant
+        (dogInfos->state) = 2;
+
+        //Si il est au dessus de la limite
+        if(backTargetedSheepY < MAP_SIZE_Y/2){
+
+          dogInfos->targetPositionX = positionClamp(backTargetedSheepX,0);
+          dogInfos->targetPositionY = positionClamp(backTargetedSheepY - (dogInfos->actionRange) - 100,1);
+
+        }else{//Si il est au dessous de la limite
+
+          dogInfos->targetPositionX = positionClamp(backTargetedSheepX,0);
+          dogInfos->targetPositionY = positionClamp(backTargetedSheepY + (dogInfos->actionRange) + 100,1);
+
+      }
+    }
+  }
+
+  //Finir le contournement
+  if(dogInfos->state == 2){
+    //Si on a atteint la position precedente
+    if(isTargetPositionReached(dogInfos))
+      (dogInfos->state) = 3;
+
+  }
+
     //Si on chasse un brebis
-    if(dogInfos->state != 0){
+    if(dogInfos->state == 3){
       //Chercher son ID courant
       int tmpIdSheep = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
 
@@ -264,12 +311,12 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         if(entityAround[tmpIdSheep].positionY < MAP_SIZE_Y/2){
 
           dogInfos->targetPositionX = positionClamp(entityAround[tmpIdSheep].positionX,0);
-          dogInfos->targetPositionY = positionClamp(entityAround[tmpIdSheep].positionY - (dogInfos->actionRange) + 2,1);
+          dogInfos->targetPositionY = positionClamp(entityAround[tmpIdSheep].positionY - (dogInfos->actionRange) + 1,1);
 
         }else{//Si il est au dessous de la limite
 
           dogInfos->targetPositionX = positionClamp(entityAround[tmpIdSheep].positionX,0);
-          dogInfos->targetPositionY = positionClamp(entityAround[tmpIdSheep].positionY + (dogInfos->actionRange) - 2,1);
+          dogInfos->targetPositionY = positionClamp(entityAround[tmpIdSheep].positionY + (dogInfos->actionRange) - 1,1);
 
         }
       }else{//Si il est en position ou que qu'il a atteint le milieu
@@ -278,7 +325,10 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         dogInfos->targetedSheepId = 0;
 
       }
-    }else{//Si on cherche une brebis
+    }
+
+    //Si on cherche toujours une brebis
+    if(dogInfos->state == 0){
 
       //Si on a atteint la position target ou qu'on ne bouge pas
       if(isTargetPositionReached(dogInfos) || (dogInfos->targetPositionX == 0 && dogInfos->targetPositionY == 0)){
