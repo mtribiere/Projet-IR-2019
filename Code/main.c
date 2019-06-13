@@ -12,6 +12,7 @@
 #include "dog.h"
 #include "entity.h"
 #include "brain.h"
+#include "map.h"
 #include "networkAssistant.h"
 #include "utilityFunctions.h"
 
@@ -245,14 +246,14 @@ int main(int argc, char **argv)
 {
 
 	//Initialisation des varibles indépendantes du type de chien
-	dogInfos.dogType = 1;
+	dogInfos.dogType = 5;
 	dogInfos.entity.positionX = 0;
 	dogInfos.entity.positionY = 0;
 	dogInfos.entity.ID = 0;
 	dogInfos.targetedSheepId = 0;
 	dogInfos.state = 0;
-	dogInfos.targetPositionX = 0;
-	dogInfos.targetPositionY = 0;
+	dogInfos.targetPositionX = MAP_SIZE_X/2;
+	dogInfos.targetPositionY = MAP_SIZE_Y/2;
 
 	int n = 0;
 
