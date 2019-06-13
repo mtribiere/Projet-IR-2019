@@ -145,7 +145,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
           }else{//Si il est plus grand
             dogInfos->state = 1;
           }
-
         }
       }
     }
