@@ -352,9 +352,8 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         }
     }
 
-    // NE DETECTE PAS LE JAUNE QUI PART -> A CORRIGER !!!!!!
-    if(dogInfos->state == 4){
 
+    if(dogInfos->state == 4){
       // S'il y a au moins un jaune dans notre champ de vision
       if(numberOfEntity > 0 && isYellowIn(dogInfos,entityAround,numberOfEntity)){
 
@@ -365,14 +364,17 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
         printf("\n\n On veut une coordonnée en x de %d \n",dogInfos->targetPositionX);
         printf(" On veut une coordonnée en y de %d \n\n",dogInfos->targetPositionY);
-        if(isTargetPositionReached(dogInfos)) dogInfos->state = 5;
+      }
+
+      if(isTargetPositionReached(dogInfos)) dogInfos->state = 5;
+      else printf("\n\n Coordonnées encore non atteintes \n\n");
 /*
       }else{ // Sinon s'il n'y a aucun jaune dans le champ de vision
             // On attend qu'un jaune revienne pour lui indiquer la direction de la brebis
         dogInfos->targetPositionX = (dogInfos->entity).positionX;
         dogInfos->targetPositionY = (dogInfos->entity).positionY;
       }*/
-    }
+
   }
 
   if(dogInfos->state == 5){
@@ -471,10 +473,8 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
                 printf("\n Mise en mouvement :\n Cible en x : %d\n Cible en y : %d\n \n\n",dogInfos->targetPositionX,dogInfos->targetPositionY);
 
             }
-          }else{
-            printf("\n\n CE CHIEN NE DEVAIT PAS BOUGER CAR SON ID EST %d ET L'ID QUI DEVAIT BOUGER EST LA %d \n\n",(dogInfos->entity).ID,idYellowToMove);
-            }
-            if (isBrebisNear != 0){  // Il y a au moins une brebis à proximité à ramener à l'enclos
+          }
+          if (isBrebisNear != 0){  // Il y a au moins une brebis à proximité à ramener à l'enclos
               dogInfos->state = 2;
               printf("\n\n Passage à l'état 2 \n\n");
 
@@ -522,13 +522,17 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         // On est dans l'état où on a détecté une brebis à proximité
         // On va donc la ramener à l'enclos, sauf si quelqu'un s'en charge déjà
         if(dogInfos->state == 2){
+          // Avant toute chose, on peut réinitialiser les variables statiques pour les autres jaunes
+          deplacement_sur_x = 0;
+          deplacement_sur_y = 0;
+          idYellowToMove = 0;
+
 
           int sheepToHunt = 1;
           //Eviter de prendre en chasse la brebis d'un autre jaune
           for(int i = 0;i<numberOfEntity;i++){
             //Si il y a un jaune
             if(entityAround[i].nickname[0] == 'y' && entityAround[i].nickname[1] == 'e' && entityAround[i].nickname[2] == 'l'){
-
               //Ne pas prendre en chasse la brebis
               sheepToHunt = 0;
             }
