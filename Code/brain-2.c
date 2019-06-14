@@ -60,7 +60,13 @@ int findIdOfSheep(Entity *entityAround,int numberOfEntity,int idToFind){
 }
 
 
-
+int min(int a, int b){
+  int toReturn=a;
+  if(b < a){
+    toReturn = b;
+  }
+  return toReturn;
+}
 
 
 
@@ -109,7 +115,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         //Si c'est une brebis
         if(entityAround[i].nickname[0] == 'b' && entityAround[i].nickname[1] == 'o' && entityAround[i].nickname[2] == 't'){
           //Si elle n'est pas déjà placée
-          int distance = sqrt(pow(entityAround[i].positionX,2)+pow((MAP_SIZE_Y/2) - entityAround[i].positionY,2));
+          unsigned int distance = sqrt(pow(entityAround[i].positionX,2)+pow((MAP_SIZE_Y/2) - entityAround[i].positionY,2));
           if(distance >= MAP_SIZE_X/10){
             //La cibler
             dogInfos->targetedSheepId = entityAround[i].ID;
@@ -180,7 +186,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         // ET (entityAround[i].positionY >= (MAP_SIZE_Y/2)-(MAP_SIZE_X/10)-PUSHING_MARGIN)
 
         //Si la brebis n'est pas dans l'enclos
-        int distance = sqrt(pow(entityAround[tmpIdSheep].positionX,2)+pow((MAP_SIZE_Y/2) - entityAround[tmpIdSheep].positionY,2));
+        unsigned int distance = sqrt(pow(entityAround[tmpIdSheep].positionX,2)+pow((MAP_SIZE_Y/2) - entityAround[tmpIdSheep].positionY,2));
         if(distance >= MAP_SIZE_X/10){
 
             //Continuer de pousser la brebis en réactualisant les paramètres
@@ -305,7 +311,8 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       if(dogInfos->state == 3){
 
         int tmpIdSheep = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
-        int angleRatio,distance;
+        int angleRatio;
+        //unsigned int distance;
 
         if(entityAround[tmpIdSheep].positionX == MAP_SIZE_X/2){
           angleRatio = 1;
@@ -349,29 +356,16 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     if(dogInfos->state == 4){
 
       // S'il y a au moins un jaune dans notre champ de vision
-
       if(numberOfEntity > 0 && isYellowIn(dogInfos,entityAround,numberOfEntity)){
 
-      // S'il y a un jaune dans notre champ de vision
-        // On attend 4 secondes avant de bouger (temps arbitraire pour que le jaune ait le temps de sortir)
-        int timeToWait = 4;
+        // Pour attendre que le jaune parte
+        // On va se rapprocher du centre en divisant par deux l'écart entre le centre et nos coordonnees
+        dogInfos->targetPositionX = (dogInfos->entity).positionX + ((dogInfos->entity).positionX - MAP_SIZE_X/2)/2;
+        dogInfos->targetPositionY = (dogInfos->entity).positionY - ((dogInfos->entity).positionY - MAP_SIZE_Y/2)/2;
 
-        // Initialisation des variables
-        time_t startTime = 0;
-        static time_t currentTime = 0;
-
-        // On attend
-        startTime = time(NULL);
-        while(currentTime - startTime + 1 <= timeToWait) {
-            currentTime = time(NULL);
-        }
-
-        // Une fois que c'est fait on repart en exploration
-        dogInfos->state = 0;
-        dogInfos->targetPositionX = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
-        dogInfos->targetPositionY = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
-
-        printf("Fin de la passation \n\n\n\n\n\n");
+        printf("\n\n On veut une coordonnée en x de %d \n",dogInfos->targetPositionX);
+        printf(" On veut une coordonnée en y de %d \n\n",dogInfos->targetPositionY);
+        if(isTargetPositionReached(dogInfos)) dogInfos->state = 5;
 /*
       }else{ // Sinon s'il n'y a aucun jaune dans le champ de vision
             // On attend qu'un jaune revienne pour lui indiquer la direction de la brebis
@@ -380,7 +374,18 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       }*/
     }
   }
-}
+
+  if(dogInfos->state == 5){
+
+      // On est arrivé encore plus à proximité du centre
+      // Une fois que c'est fait on repart en exploration
+      dogInfos->state = 0;
+      dogInfos->targetPositionX = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
+      dogInfos->targetPositionY = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
+
+      printf("Fin de la passation \n\n\n\n\n\n");
+    }
+  }
 
 
 
@@ -401,6 +406,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       // Création de variables statiques utilisees plus tard pour ne pas les remttre à 0 tout le temps
       static int deplacement_sur_x;
       static int deplacement_sur_y;
+      static int idYellowToMove;
 
       // Dès qu'on apparait sur la map :
       if(dogInfos->state == 0){
@@ -412,11 +418,13 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
           // Initialisation des variables
           deplacement_sur_x = 0;
           deplacement_sur_y = 0;
+          idYellowToMove = 0;
       }
 
       if(dogInfos->state == 1){
 
-        int idYellowToMove = 0;
+        printf("\n\n Passage à l'état 1 \n\n");
+
         int isBrebisNear = 0;
         // Se réinitialise lorsqu'on revient de l'état > 1
 
@@ -424,15 +432,15 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         for(int idAround = 0;idAround<numberOfEntity;idAround++){
           //Si c'est un chien bleu, on retient sa directon
           if(entityAround[idAround].nickname[0] == 'b' && entityAround[idAround].nickname[1] == 'l' && entityAround[idAround].nickname[2] == 'u' && entityAround[idAround].nickname[3]=='e'){
-            deplacement_sur_x = entityAround[idAround].positionX - MAP_SIZE_X/2;
-            deplacement_sur_y = entityAround[idAround].positionY - MAP_SIZE_Y/2;
+            if(deplacement_sur_x == 0 && deplacement_sur_y == 0){ // Si le jaune ne connait pas déjà une valeur de destination
+              deplacement_sur_x = entityAround[idAround].positionX - MAP_SIZE_X/2;
+              deplacement_sur_y = entityAround[idAround].positionY - MAP_SIZE_Y/2;
+            }
+            printf("\n\n MODIFICATION DES PARAMETRES \n\n");
           }
           // Sinon si c'est un chien jaune, on choisit le jaune à déplacer
           if (entityAround[idAround].nickname[0] == 'y' && entityAround[idAround].nickname[1] == 'e' && entityAround[idAround].nickname[2] == 'l' && entityAround[idAround].nickname[3]=='l' && entityAround[idAround].nickname[4] == 'o' && entityAround[idAround].nickname[5]=='w'){
-            idYellowToMove = idAround;
-          }
-          else{
-            idYellowToMove = (dogInfos->entity).ID;
+            idYellowToMove = min(entityAround[idAround].ID,(dogInfos->entity.ID));
           }
           if (entityAround[idAround].nickname[0] == 'b' && entityAround[idAround].nickname[1] == 'o' && entityAround[idAround].nickname[2] == 't'){
             isBrebisNear++;
@@ -444,7 +452,9 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
         if((deplacement_sur_x != 0 || deplacement_sur_y != 0) && (dogInfos->entity).ID == idYellowToMove){
             if(isTargetPositionReached(dogInfos)){
+                printf("\n\n BLEU DETECTE. ON MODIFIE LES POSITIONS DE DESTINATION. \n\n");
                 // Il s'agit ici de calculer k tel que deplacement_sur_x*k < MAP_SIZE_X && deplacement_sur_y*k < MAP_SIZE_Y && k soit le plus grand possible
+                /*
                 int facteur_max = 0;
                 while(deplacement_sur_x*facteur_max < MAP_SIZE_X && deplacement_sur_y*facteur_max < MAP_SIZE_Y){
                   facteur_max++;
@@ -455,9 +465,14 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
                 dogInfos->targetPositionX += deplacement_sur_x*facteur_max;
                 dogInfos->targetPositionY += deplacement_sur_y*facteur_max;
 
-                printf("\n\n Facteur max : %d\n deplacement_sur_x : %d\n deplacement_sur_y : %d\n",facteur_max,deplacement_sur_x,deplacement_sur_y);
+                printf("\n\n Facteur max : %d\n deplacement_sur_x : %d\n deplacement_sur_y : %d\n",facteur_max,deplacement_sur_x,deplacement_sur_y);*/
+                dogInfos->targetPositionX += deplacement_sur_x;
+                dogInfos->targetPositionY += deplacement_sur_y;
                 printf("\n Mise en mouvement :\n Cible en x : %d\n Cible en y : %d\n \n\n",dogInfos->targetPositionX,dogInfos->targetPositionY);
 
+            }
+          }else{
+            printf("\n\n CE CHIEN NE DEVAIT PAS BOUGER CAR SON ID EST %d ET L'ID QUI DEVAIT BOUGER EST LA %d \n\n",(dogInfos->entity).ID,idYellowToMove);
             }
             if (isBrebisNear != 0){  // Il y a au moins une brebis à proximité à ramener à l'enclos
               dogInfos->state = 2;
@@ -472,12 +487,13 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
               // ET (entityAround[i].positionY >= (MAP_SIZE_Y/2)-(MAP_SIZE_X/10)-PUSHING_MARGIN)
 
               //Si la brebis n'est pas dans l'enclos
-              int distance = sqrt(pow(entityAround[tmpIdSheep].positionX,2)+pow((MAP_SIZE_Y/2) - entityAround[tmpIdSheep].positionY,2));
+              unsigned int distance = sqrt(pow(entityAround[tmpIdSheep].positionX,2)+pow((MAP_SIZE_Y/2) - entityAround[tmpIdSheep].positionY,2));
               printf("\n\n Distance : %d \n\n",distance);
               if(distance >= MAP_SIZE_X/10){
 
                   //Continuer de pousser la brebis en réactualisant les paramètres
                   int angleRatio = entityAround[tmpIdSheep].positionY / entityAround[tmpIdSheep].positionX;
+                  printf("\n\n angleRatio : %d \n\n",angleRatio);
 
                   dogInfos->targetPositionX = entityAround[tmpIdSheep].positionX + sqrt(dogInfos->actionRange / (1+pow(angleRatio,2)));
 
@@ -500,7 +516,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
             }
         }
-      }
     }
 
 
@@ -552,7 +567,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
           // ET (entityAround[i].positionY >= (MAP_SIZE_Y/2)-(MAP_SIZE_X/10)-PUSHING_MARGIN)
 
           //Si la brebis n'est pas dans l'enclos
-          int distance = sqrt(pow(entityAround[tmpIdSheep].positionX,2)+pow((MAP_SIZE_Y/2) - entityAround[tmpIdSheep].positionY,2));
+          unsigned int distance = sqrt(pow(entityAround[tmpIdSheep].positionX,2)+pow((MAP_SIZE_Y/2) - entityAround[tmpIdSheep].positionY,2));
           if(distance >= MAP_SIZE_X/10){
 
               //Continuer de pousser la brebis en réactualisant les paramètres
