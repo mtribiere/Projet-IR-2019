@@ -125,7 +125,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     if(dogInfos->targetedSheepId == 0){
 
       //Aller au meetPoint
-      dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+      dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE/2;
       dogInfos->targetPositionY = MAP_SIZE_Y/2;
     }
 
@@ -149,31 +149,68 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       }
     }
 
-    //Si on a atteint le meetPoint est que un partenaire a été trouvé
-    if((dogInfos->state == 1 || dogInfos->state == 11) && isTargetPositionReached(dogInfos)){
-      //Si le partenaire est en place
-      int tmpId = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
+    //Si un partenaire a été trouvé
+    if(dogInfos->state == 1 || dogInfos->state == 11){
 
+      //Si on a atteint le meetPoint
       //En X
-      if(entityAround[tmpId].positionX >= MAP_SIZE_X-ENTITY_SIZE-POSITION_MARGIN && entityAround[tmpId].positionX <= MAP_SIZE_X-ENTITY_SIZE+POSITION_MARGIN){
+      if((dogInfos->entity).positionX>=MAP_SIZE_X-ENTITY_SIZE){
         //En Y
-        if(entityAround[tmpId].positionY >= MAP_SIZE_Y/2-POSITION_MARGIN && entityAround[tmpId].positionY <= MAP_SIZE_Y/2+POSITION_MARGIN){
-          //Commencer le pattern
-          (dogInfos->state)++;
+        if((dogInfos->entity).positionY <= MAP_SIZE_Y/2+POSITION_MARGIN && (dogInfos->entity).positionY >= MAP_SIZE_Y/2-POSITION_MARGIN){
+
+          //Si le partenaire est en place
+          int tmpId = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
+
+          //Si pas d'erreur de synchronisation
+          if(tmpId != -1){
+            //En X
+            if(entityAround[tmpId].positionX >= MAP_SIZE_X-ENTITY_SIZE){
+              //En Y
+              if(entityAround[tmpId].positionY <= MAP_SIZE_Y/2+POSITION_MARGIN && entityAround[tmpId].positionY >= MAP_SIZE_Y/2-POSITION_MARGIN){
+                //Commencer le pattern
+                (dogInfos->state)++;
+
+                //Ne plus bouger
+                dogInfos->targetPositionX = (dogInfos->entity).positionX;
+                dogInfos->targetPositionY = (dogInfos->entity).positionY;
+              }
+            }
+          }else{//Erreur de synchronisation
+            dogInfos->state = 0;
+            dogInfos->targetedSheepId = 0;
+          }
         }
       }
     }
+    ////////////////Point 2 / Spécial
+    if(dogInfos->state == 4 || dogInfos->state == 14){//Si on est celui du dessus
+      //Si on a atteint la position X voulu
+      if((dogInfos->entity).positionX <= ENTITY_SIZE){
 
-    if(dogInfos->state != 0 && dogInfos->state != 1 && dogInfos->state != 11 && isTargetPositionReached(dogInfos)){
+        //Ne plus bouger et passer au point suivant
+        dogInfos->targetPositionX = (dogInfos->entity).positionX;
+        dogInfos->targetPositionY = (dogInfos->entity).positionY;
+
+        //Passer à l'etat suivant
+        (dogInfos->state)++;
+        
+      }else{//Si on a pas atteint la position
+        dogInfos->targetPositionX = (dogInfos->entity).positionX -10;//Vitesse de déplacment
+        dogInfos->targetPositionY = (dogInfos->entity).positionY;
+      }
+    }
+
+
+    if(dogInfos->state != 0 && dogInfos->state != 1 && dogInfos->state != 11 && dogInfos->state != 4 && dogInfos->state != 14 && isTargetPositionReached(dogInfos)){
       //Passer au point suivant
       (dogInfos->state)++;
 
       //Boucler
-      if(dogInfos->state == 7){
+      if(dogInfos->state == 8){
         dogInfos->state = 0;
         dogInfos->targetedSheepId = 0;
       }
-      if(dogInfos->state == 17){
+      if(dogInfos->state == 18){
         dogInfos->state = 0;
         dogInfos->targetedSheepId = 0;
       }
@@ -188,33 +225,22 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         dogInfos->targetPositionY = MAP_SIZE_Y/2+(dogInfos->actionRange);
       }
 
-      ////////////////Point 2
-      if(dogInfos->state == 4){//Si on est celui du dessus
-        dogInfos->targetPositionX = ENTITY_SIZE;
-        dogInfos->targetPositionY = MAP_SIZE_Y/2-(dogInfos->actionRange);
-      }
-      if(dogInfos->state == 14){//Si on est celui du dessous
-        dogInfos->targetPositionX = ENTITY_SIZE;
-        dogInfos->targetPositionY = MAP_SIZE_Y/2+(dogInfos->actionRange);
-      }
-
-
       //////////////Point 3
-      if(dogInfos->state == 5){//Si on est celui du dessus
+      if(dogInfos->state == 6){//Si on est celui du dessus
         dogInfos->targetPositionX = ENTITY_SIZE;
         dogInfos->targetPositionY = MAP_SIZE_Y/2-MAP_SIZE_X/10;
       }
-      if(dogInfos->state == 15){//Si on est celui du dessous
+      if(dogInfos->state == 16){//Si on est celui du dessous
         dogInfos->targetPositionX = ENTITY_SIZE;
         dogInfos->targetPositionY = MAP_SIZE_Y/2+MAP_SIZE_X/10;
       }
 
       ////////////Point 4
-      if(dogInfos->state == 6){//Si on est celui du dessus
+      if(dogInfos->state == 7){//Si on est celui du dessus
         dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
         dogInfos->targetPositionY = MAP_SIZE_Y/2-MAP_SIZE_X/10;
       }
-      if(dogInfos->state == 16){//Si on est celui du dessous
+      if(dogInfos->state == 17){//Si on est celui du dessous
         dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
         dogInfos->targetPositionY = MAP_SIZE_Y/2+MAP_SIZE_X/10;
       }
@@ -253,10 +279,10 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
                   //La contourner / Etape 1
                   //Si elle est a notre droite
                   if(backTargetedSheepX >= (dogInfos->entity).positionX){
-                    dogInfos->targetPositionX = backTargetedSheepX-5*(dogInfos->actionRange);
+                    dogInfos->targetPositionX = backTargetedSheepX-2*(dogInfos->actionRange);
                     dogInfos->targetPositionY = (dogInfos->entity).positionY;
                   }else{ // Si elle est a notre gauche
-                    dogInfos->targetPositionX = backTargetedSheepX+5*(dogInfos->actionRange);
+                    dogInfos->targetPositionX = backTargetedSheepX+2*(dogInfos->actionRange);
                     dogInfos->targetPositionY = (dogInfos->entity).positionY;
                   }
 
@@ -281,12 +307,12 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         if(backTargetedSheepY < MAP_SIZE_Y/2){
 
           dogInfos->targetPositionX = positionClamp(backTargetedSheepX,0);
-          dogInfos->targetPositionY = positionClamp(backTargetedSheepY - (dogInfos->actionRange) - 100,1);
+          dogInfos->targetPositionY = positionClamp(backTargetedSheepY - (dogInfos->actionRange) - 10,1);
 
         }else{//Si il est au dessous de la limite
 
           dogInfos->targetPositionX = positionClamp(backTargetedSheepX,0);
-          dogInfos->targetPositionY = positionClamp(backTargetedSheepY + (dogInfos->actionRange) + 100,1);
+          dogInfos->targetPositionY = positionClamp(backTargetedSheepY + (dogInfos->actionRange) + 10,1);
 
       }
     }
