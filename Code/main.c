@@ -270,7 +270,7 @@ int main(int argc, char **argv)
 		goto usage;
 
 	while (n >= 0) {
-		n = getopt(argc, argv, "hsp:P:o:VBJ");
+		n = getopt(argc, argv, "hsp:P:o:VBGJ");
 		if (n < 0)
 			continue;
 		switch (n) {
@@ -291,6 +291,9 @@ int main(int argc, char **argv)
 			break;
 		case 'B':
 			dogInfos.dogType = 0;
+			break;
+		case 'G':
+			dogInfos.dogType = 1;
 			break;
 		case 'J':
 			dogInfos.dogType = 5;
