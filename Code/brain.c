@@ -7,7 +7,6 @@
 #include <time.h>
 #include <unistd.h>
 #include <math.h>
-#define CLOCKS_PER_SEC (__DARWIN_CLK_TCK)
 
 
 #include "entity.h"
@@ -156,7 +155,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
       //Si on a atteint le meetPoint
       //En X
-      if((dogInfos->entity).positionX>=MAP_SIZE_X-ENTITY_SIZE){
+      if((dogInfos->entity).positionX>=MAP_SIZE_X-ENTITY_SIZE-POSITION_MARGIN){
         //En Y
         if((dogInfos->entity).positionY <= MAP_SIZE_Y/2+POSITION_MARGIN && (dogInfos->entity).positionY >= MAP_SIZE_Y/2-POSITION_MARGIN){
 
@@ -167,7 +166,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
           if(tmpId != -1){
             printf("Waiting parterner\n");
             //En X
-            if(entityAround[tmpId].positionX >= MAP_SIZE_X-ENTITY_SIZE){
+            if(entityAround[tmpId].positionX >= MAP_SIZE_X-ENTITY_SIZE-POSITION_MARGIN){
               //En Y
               if(entityAround[tmpId].positionY <= MAP_SIZE_Y/2+POSITION_MARGIN && entityAround[tmpId].positionY >= MAP_SIZE_Y/2-POSITION_MARGIN){
                 //Commencer le pattern
@@ -252,8 +251,8 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
   //Si on est un chien Vert (Ramener les brebis sur la ligne centrale)
   if(dogInfos->dogType == 4)
   {
-    static int backPositionX = 0;
-    static int backPositionY = 0;
+    static int backPositionX;
+    static int backPositionY;
     static int backTargetedSheepX;
     static int backTargetedSheepY;
 
@@ -384,10 +383,29 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       }
     }
 
+    //Si on est en sécurité
+    if(dogInfos->state == 99){
+      //Si on ne voit plus le mouton que l'on chassait
+      if(findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId) == -1){
+        //Enlever le mode de sécurité
+        dogInfos->state = 0;
+        dogInfos->targetedSheepId = 0;
+      }
+    }
+
     //Si on ne bouge plus
     if((dogInfos->entity).positionX == backPositionX && (dogInfos->entity).positionY == backPositionY){
       //S'eloigner
-      
+      dogInfos->targetPositionX = MAP_SIZE_X/2;
+      dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;
+
+      //Passer en sécurité
+      dogInfos->state = 99;
+      printf("Security Mode !!\n");
     }
+
+    //Sauvergarder la position courante
+    backPositionX = (dogInfos->entity).positionX;
+    backPositionY = (dogInfos->entity).positionY;
   }
 }
