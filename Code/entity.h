@@ -2,7 +2,7 @@
 #define ENTITY_FILE
 
 #define MAXENTITY 2000
-#define ENTITY_SIZE 70
+#define ENTITY_SIZE 40
 #define POSITION_MARGIN 2
 #define PUSHING_MARGIN 20
 
