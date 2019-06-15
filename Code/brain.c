@@ -8,10 +8,10 @@
 #include <unistd.h>
 #include <math.h>
 
-
 #include "entity.h"
 #include "map.h"
 
+#define TIME_UNTIL_SYNCH 20
 
 int generateRandomPosition(int lower,int upper){
   struct timespec ts;
@@ -96,6 +96,95 @@ int findIdOfSheep(Entity *entityAround,int numberOfEntity,int idToFind){
   }
 
   return idToReturn;
+}
+
+void swap(int* a, int* b)
+{
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+int partition (int arr[], int low, int high)
+{
+    int pivot = arr[high];
+    int i = (low - 1); 
+    for (int j = low; j <= high- 1; j++)
+    {
+        if (arr[j] <= pivot)
+        {
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+    swap(&arr[i + 1], &arr[high]);
+    return (i + 1);
+}
+
+void quickSort(int arr[], int low, int high)
+{
+    if (low < high)
+    {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+//Retourne l'ID attribué
+int purpleSynch(Entity *entityAround,int numberOfEntity,int idToFind){
+  int toReturnID = 0;
+
+  /////////Compter le nombre de Violet
+  int purpleCount = 0;
+  //Pour toutes le entité présentes
+  for(int i = 0;i<numberOfEntity;i++){
+    //Si c'est un violet
+    if(entityAround[i].nickname[0] == 'p' && entityAround[i].nickname[1] == 'u' && entityAround[i].nickname[2] == 'r')
+      purpleCount++;
+  }
+
+  ////////Remplir le tableau d'IDs
+  //Augmenter le tableau d'ID pour le notre
+  purpleCount++;
+
+  //Déclarer le tableau des ID
+  int *purpleIDs = malloc(sizeof(int)*(purpleCount+1));
+  int purpleIndex = 0;
+
+  //Pour toutes le entité présentes
+  for(int i = 0;i<numberOfEntity;i++){
+    //Si c'est un violet
+    if(entityAround[i].nickname[0] == 'p' && entityAround[i].nickname[1] == 'u' && entityAround[i].nickname[2] == 'r'){
+      purpleIDs[purpleIndex] = entityAround[i].ID;
+      purpleIndex++;
+    }
+  }
+  //Inserer notre ID
+  purpleIDs[purpleCount-1] = idToFind;
+
+  /////////Trier le tableau d'ID (tri bulle)
+  quickSort(purpleIDs,0,purpleCount-1);
+
+  /////DEBUG
+  printf("IDs purple : ");
+  for(int i = 0;i<purpleCount;i++)
+    printf("%d;",purpleIDs[i]);
+  printf("\n");
+
+  /////////Trouver l'ID attribué
+  for(int i = 0;i<purpleCount;i++){
+      //Si on a trouvé la valeur
+      if(purpleIDs[i] == idToFind){
+        toReturnID = i;
+      }
+  }
+
+  ////////Liberer le tableau d'IDs
+  free(purpleIDs);
+
+
+  return toReturnID;
 }
 
 
@@ -248,16 +337,36 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       }
     }
 }
-  //Si on est un chien Vert (Ramener les brebis sur la ligne centrale)
+  //Si on est un chien Violet (Ramener les brebis sur la ligne centrale)
   if(dogInfos->dogType == 4)
   {
     static int backPositionX;
     static int backPositionY;
     static int backTargetedSheepX;
     static int backTargetedSheepY;
+    static int attributionID;
 
-    //Si on est en recherche de brebis
+
+    //Si on est en attente de sychronisation avec les autres
     if(dogInfos->state == 0){
+      //Aller au meetPoint
+      dogInfos->targetPositionX = MAP_SIZE_X/2;
+      dogInfos->targetPositionY = MAP_SIZE_Y/2;
+
+      //Si le timer arrive à la limite
+      if(time(NULL)-(dogInfos->timer) >= TIME_UNTIL_SYNCH){
+        //Se synchroniser
+        attributionID = purpleSynch(entityAround,numberOfEntity,(dogInfos->entity).ID);
+        dogInfos->state = 1;
+
+      }
+    }
+
+    if(dogInfos->state > 0){
+      printf("Attribution ID : %d\n",attributionID);
+    }
+    //Si on est en recherche de brebis
+    if(dogInfos->state == 1){
 
       //Chercher si une brebis est visible
       for(int i = 0;i<numberOfEntity;i++){
@@ -276,7 +385,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
                   //La cibler
                   dogInfos->targetedSheepId = entityAround[i].ID;
-                  dogInfos->state = 1;
+                  dogInfos->state = 2;
                   backTargetedSheepX = entityAround[i].positionX;
                   backTargetedSheepY = entityAround[i].positionY;
 
@@ -299,13 +408,13 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     }
 
     //Contournement / Etape 2 / Réaligmement
-    if(dogInfos->state == 1){
+    if(dogInfos->state == 2){
 
       //Si on a atteint la position précendente
       if(isTargetPositionReached(dogInfos)){
 
         //Passer a l'état suivant
-        (dogInfos->state) = 2;
+        (dogInfos->state) = 3;
 
         //Si il est au dessus de la limite
         if(backTargetedSheepY < MAP_SIZE_Y/2){
@@ -323,15 +432,15 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
   }
 
   //Finir le contournement
-  if(dogInfos->state == 2){
+  if(dogInfos->state == 3){
     //Si on a atteint la position precedente
     if(isTargetPositionReached(dogInfos))
-      (dogInfos->state) = 3;
+      (dogInfos->state) = 4;
 
   }
 
     //Si on chasse un brebis
-    if(dogInfos->state == 3){
+    if(dogInfos->state == 4){
       //Chercher son ID courant
       int tmpIdSheep = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
 
@@ -351,13 +460,13 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         }
       }else{//Si il est en position ou que qu'il a atteint le milieu
         //Arreter la chasse
-        dogInfos->state = 0;
-        dogInfos->targetedSheepId = 0;
+        dogInfos->state = 1;
+        dogInfos->targetedSheepId = 1;
       }
     }
 
     //Si on cherche toujours une brebis
-    if(dogInfos->state == 0){
+    if(dogInfos->state == 1){
 
       //Si on a atteint la position target ou qu'on ne bouge pas
       if(isTargetPositionReached(dogInfos) || (dogInfos->targetPositionX == 0 && dogInfos->targetPositionY == 0)){
@@ -388,13 +497,13 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       //Si on ne voit plus le mouton que l'on chassait
       if(findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId) == -1){
         //Enlever le mode de sécurité
-        dogInfos->state = 0;
-        dogInfos->targetedSheepId = 0;
+        dogInfos->state = 1;
+        dogInfos->targetedSheepId = 1;
       }
     }
 
-    //Si on ne bouge plus
-    if((dogInfos->entity).positionX == backPositionX && (dogInfos->entity).positionY == backPositionY){
+    //Si on ne bouge plus (après la synchorniation)
+    if((dogInfos->entity).positionX == backPositionX && (dogInfos->entity).positionY == backPositionY && dogInfos->state > 0){
       //S'eloigner
       dogInfos->targetPositionX = MAP_SIZE_X/2;
       dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;

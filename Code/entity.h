@@ -4,7 +4,7 @@
 #define MAXENTITY 2000
 #define ENTITY_SIZE 38
 #define POSITION_MARGIN 2
-#define PUSHING_MARGIN 20
+#define PUSHING_MARGIN 30
 
 typedef struct entity {
   unsigned int positionX;
@@ -19,6 +19,7 @@ typedef struct dog{
   int targetedSheepId;
   int dogType;
   int actionRange;
+  time_t timer;
   unsigned int targetPositionX;
   unsigned int targetPositionY;
 }Dog;
