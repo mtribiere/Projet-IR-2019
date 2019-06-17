@@ -1,5 +1,5 @@
-sock : main.o brain.o networkAssistant.o utilityFunctions.o
-	gcc -Wall -lm -std=gnu99 -o $@  main.o brain.o networkAssistant.o utilityFunctions.o -lwebsockets
+sock : main.o brain-duel.o networkAssistant.o utilityFunctions.o
+	gcc -Wall -lm -std=gnu99 -o $@  main.o brain-duel.o networkAssistant.o utilityFunctions.o -lwebsockets
 
 main.o: main.c
 	gcc -Wall -std=gnu99 -g -c $^
@@ -10,7 +10,7 @@ networkAssistant.o : networkAssistant.c
 utilityFunctions.o : utilityFunctions.c
 	gcc -Wall -std=gnu99 -g -c $^
 
-brain.o: brain.c
+brain-duel.o: brain-duel.c
 	gcc -Wall -std=gnu99 -g -c $^
 
 affiche: spectacle
@@ -36,6 +36,14 @@ duo : sock
 
 local: sock
 	./sock -V -p 1443 -o agar.io 127.0.0.1
+
+multi-local: sock
+	./sock -p 1443 -o agar.io 127.0.0.1
+	./sock -p 1443 -o agar.io 127.0.0.1
+	./sock -p 1443 -o agar.io 127.0.0.1
+	./sock -p 1443 -o agar.io 127.0.0.1
+	./sock -V 1443 -o agar.io 127.0.0.1
+	./sock -V 1443 -o agar.io 127.0.0.1
 
 clean:
 	rm -r *.o
