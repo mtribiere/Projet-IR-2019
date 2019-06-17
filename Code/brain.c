@@ -406,13 +406,13 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
                     backPositionBeforeChaseX = (dogInfos->entity).positionX;
                     backPositionBeforeChaseY = (dogInfos->entity).positionY;
 
-                    //Se preparer a retrouver sa postion
-                    patternState--;
-                    if(patternState < 0)
-                      patternState = 3;
+                    //Se preparer a retrouver sa postion si besoin
+                    if(patternState < 4){
+                      patternState--;
+                      if(patternState < 0)
+                        patternState = 3;
+                    }
                   }
-
-
 
                   //La cibler
                   dogInfos->targetedSheepId = entityAround[i].ID;
@@ -423,10 +423,10 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
                   //La contourner / Etape 1
                   //Si elle est a notre droite
                   if(backTargetedSheepX >= (dogInfos->entity).positionX){
-                    dogInfos->targetPositionX = backTargetedSheepX-2*(dogInfos->actionRange);
+                    dogInfos->targetPositionX = backTargetedSheepX-5*(dogInfos->actionRange);
                     dogInfos->targetPositionY = (dogInfos->entity).positionY;
                   }else{ // Si elle est a notre gauche
-                    dogInfos->targetPositionX = backTargetedSheepX+2*(dogInfos->actionRange);
+                    dogInfos->targetPositionX = backTargetedSheepX+5*(dogInfos->actionRange);
                     dogInfos->targetPositionY = (dogInfos->entity).positionY;
                   }
 
@@ -451,12 +451,12 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         if(backTargetedSheepY < MAP_SIZE_Y/2){
 
           dogInfos->targetPositionX = positionClamp(backTargetedSheepX,0);
-          dogInfos->targetPositionY = positionClamp(backTargetedSheepY - (dogInfos->actionRange) - 10,1);
+          dogInfos->targetPositionY = positionClamp(backTargetedSheepY - (dogInfos->actionRange) - 100,1);
 
         }else{//Si il est au dessous de la limite
 
           dogInfos->targetPositionX = positionClamp(backTargetedSheepX,0);
-          dogInfos->targetPositionY = positionClamp(backTargetedSheepY + (dogInfos->actionRange) + 10,1);
+          dogInfos->targetPositionY = positionClamp(backTargetedSheepY + (dogInfos->actionRange) + 100,1);
 
       }
     }
@@ -561,7 +561,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       }
 
       //Si toute la map est balayée
-      if((dogInfos->entity).positionX >= MAP_SIZE_X-ENTITY_SIZE && (dogInfos->entity).positionY >= MAP_SIZE_Y-(dogInfos->actionRange)/2){
+      if((dogInfos->entity).positionX <= ENTITY_SIZE && (dogInfos->entity).positionY >= MAP_SIZE_Y-ENTITY_SIZE){
         //Vider la sauvegarde de position
         backPositionBeforeChaseX = 0;
         backPositionBeforeChaseY = 0;
@@ -602,8 +602,8 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     //Si on ne bouge plus (après la synchorniation)
     if((dogInfos->entity).positionX == backPositionX && (dogInfos->entity).positionY == backPositionY && dogInfos->state > 1){
       //S'eloigner
-      dogInfos->targetPositionX = MAP_SIZE_X/2;
-      dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;
+      dogInfos->targetPositionX = backPositionBeforeChaseX;
+      dogInfos->targetPositionY = backPositionBeforeChaseY;
 
       //Passer en sécurité
       dogInfos->state = 99;
