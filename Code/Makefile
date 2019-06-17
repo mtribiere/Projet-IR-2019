@@ -28,13 +28,11 @@ multi : sock
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -V -p 2001 -o agar.io 192.168.130.114"
 
 duo : sock
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.151"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.151"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -V -p 2001 -o agar.io 192.168.130.151"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -V -p 2001 -o agar.io 192.168.130.151"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -V -p 2001 -o agar.io 192.168.130.151"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -V -p 2001 -o agar.io 192.168.130.151"
-	gnome-terminal --tab-with-profile="sheep" -e "./duo -s -p 2001 192.168.130.151"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2002 -o agar.io 192.168.130.151"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2002 -o agar.io 192.168.130.151"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -V -p 2002 -o agar.io 192.168.130.151"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -V -p 2002 -o agar.io 192.168.130.151"
+	gnome-terminal --tab-with-profile="sheep" -e "./duo -s -p 2002 192.168.130.151"
 
 local: sock
 	./sock -V -p 1443 -o agar.io 127.0.0.1
