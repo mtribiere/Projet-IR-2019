@@ -127,6 +127,7 @@ int messageReceived(struct lws *wsi,unsigned char *buff,size_t len){
 				numberOfEntity -= offset;
 
 				////////////DEBUG
+
 				printf("Number of entity : %d\n",numberOfEntity);
 				for(int i = 0;i<numberOfEntity;i++){
 					printf("Entite %s ; ID : %d ; Position = (%d;%d)\n",entityAround[i].nickname,entityAround[i].ID,entityAround[i].positionX,entityAround[i].positionY);
@@ -253,6 +254,7 @@ int main(int argc, char **argv)
 	dogInfos.state = 0;
 	dogInfos.targetPositionX = 0;
 	dogInfos.targetPositionY = 0;
+	dogInfos.timer = time(NULL);
 
 	int n = 0;
 
