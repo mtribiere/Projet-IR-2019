@@ -9,6 +9,7 @@
 #include <math.h>
 
 #include "entity.h"
+#include "brain-duel.h"
 #include "map.h"
 
 #define TIME_UNTIL_SYNCH 15
@@ -196,20 +197,6 @@ int purpleSynch(Entity *entityAround,int numberOfEntity,int idToFind){
 
   return toReturnID;
 }
-
-
-/**************************
-\Calcule la strategie (Déplacements aléatoires + ramener brebis)
-***************************/
-/*
- void computeStrategy(Dog *dogInfos,Entity *entityAround,int numberOfEntity){
-  if(isTargetPositionReached(dogInfos)){
-    dogInfos->targetPositionX = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
-    dogInfos->targetPositionY = generateRandomPosition(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
-  }
-}
-*/
-
 
 /***************************
 \Strategie pour les chiens Verts et Jaune
@@ -624,5 +611,10 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     //Sauvergarder la position courante
     backPositionX = (dogInfos->entity).positionX;
     backPositionY = (dogInfos->entity).positionY;
+  }
+
+  //Pour la strageie en duel
+  if(dogInfos->dogType == 2 || dogInfos->dogType == 3){
+    computeStrategyDuel(dogInfos,entityAround,numberOfEntity);
   }
 }

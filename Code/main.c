@@ -271,7 +271,7 @@ int main(int argc, char **argv)
 		goto usage;
 
 	while (n >= 0) {
-		n = getopt(argc, argv, "hsp:P:o:VBJ");
+		n = getopt(argc, argv, "hsp:P:o:VBJC");
 		if (n < 0)
 			continue;
 		switch (n) {
@@ -287,11 +287,14 @@ int main(int argc, char **argv)
 		case 'P':
 			info.http_proxy_address = optarg;
 			break;
-		case 'V':
-			dogInfos.dogType = 4;
-			break;
 		case 'B':
 			dogInfos.dogType = 0;
+			break;
+		case 'C':
+			dogInfos.dogType = 3;
+			break;
+		case 'V':
+			dogInfos.dogType = 4;
 			break;
 		case 'J':
 			dogInfos.dogType = 5;
