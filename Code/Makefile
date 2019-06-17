@@ -14,15 +14,16 @@ brain-2.o: brain-2.c
 	gcc -Wall -std=gnu99 -g -c -lm $^
 
 affiche: spectacle
-	gnome-terminal -e "./spectacle -s -p 2001 192.168.130.150"
+	gnome-terminal -e "./spectacle -s -p 1443 127.0.0.1"
 
 test: sock
-	./sock -p 2001 -o agar.io 192.168.130.150
+	./sock -p 1443 -o agar.io 127.0.0.1
 
 multi : sock
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.150"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -V -p 2001 -o agar.io 192.168.130.150"
-	gnome-terminal --tab-with-profile="sheep" -e "./sock -G -p 2001 -o agar.io 192.168.130.150"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 1443 -o agar.io 127.0.0.1"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 1443 -o agar.io 127.0.0.1"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 1443 -o agar.io 127.0.0.1"
+	gnome-terminal --tab-with-profile="sheep" -e "./sock -B -p 1443 -o agar.io 127.0.0.1"
 
 local: sock
 	./sock -p 1443 -o agar.io 127.0.0.1
