@@ -11,7 +11,12 @@
 #include "entity.h"
 #include "map.h"
 
-#define TIME_UNTIL_SYNCH 20
+#define TIME_UNTIL_SYNCH 15
+#define BASE_SIDE 0
+/********
+\ 0 : Base a gauche
+\ 1 : Base a droite
+********/
 
 int generateRandomPosition(int lower,int upper){
   struct timespec ts;
@@ -178,6 +183,11 @@ int purpleSynch(Entity *entityAround,int numberOfEntity,int idToFind){
       if(purpleIDs[i] == idToFind){
         toReturnID = i;
       }
+  }
+
+  //Si l'ID est trop grand
+  if(1300*toReturnID+650 >= MAP_SIZE_Y-ENTITY_SIZE){
+    toReturnID = 0;
   }
 
   ////////Liberer le tableau d'IDs
@@ -382,6 +392,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
     if(dogInfos->state > 0){
       printf("Attribution ID : %d\n",attributionID);
+      printf("Pattern State : %d\n",patternState);
     }
     //Si on est en recherche de brebis
     if(dogInfos->state == 1 && isDogReady){
@@ -423,10 +434,10 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
                   //La contourner / Etape 1
                   //Si elle est a notre droite
                   if(backTargetedSheepX >= (dogInfos->entity).positionX){
-                    dogInfos->targetPositionX = backTargetedSheepX-5*(dogInfos->actionRange);
+                    dogInfos->targetPositionX = backTargetedSheepX-3*(dogInfos->actionRange);
                     dogInfos->targetPositionY = (dogInfos->entity).positionY;
                   }else{ // Si elle est a notre gauche
-                    dogInfos->targetPositionX = backTargetedSheepX+5*(dogInfos->actionRange);
+                    dogInfos->targetPositionX = backTargetedSheepX+3*(dogInfos->actionRange);
                     dogInfos->targetPositionY = (dogInfos->entity).positionY;
                   }
 
@@ -481,12 +492,12 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         if(entityAround[tmpIdSheep].positionY < MAP_SIZE_Y/2){
 
           dogInfos->targetPositionX = positionClamp(entityAround[tmpIdSheep].positionX,0);
-          dogInfos->targetPositionY = positionClamp(entityAround[tmpIdSheep].positionY - (dogInfos->actionRange) + 1,1);
+          dogInfos->targetPositionY = positionClamp(entityAround[tmpIdSheep].positionY - (dogInfos->actionRange) + 2,1);
 
         }else{//Si il est au dessous de la limite
 
           dogInfos->targetPositionX = positionClamp(entityAround[tmpIdSheep].positionX,0);
-          dogInfos->targetPositionY = positionClamp(entityAround[tmpIdSheep].positionY + (dogInfos->actionRange) - 1,1);
+          dogInfos->targetPositionY = positionClamp(entityAround[tmpIdSheep].positionY + (dogInfos->actionRange) - 2,1);
 
         }
       }else{//Si il est en position ou que qu'il a atteint le milieu
@@ -560,8 +571,8 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         dogInfos->targetPositionY = generateRandomPosition(0,MAP_SIZE_Y-ENTITY_SIZE);
       }
 
-      //Si toute la map est balayée
-      if((dogInfos->entity).positionX <= ENTITY_SIZE && (dogInfos->entity).positionY >= MAP_SIZE_Y-ENTITY_SIZE){
+      //Si on ne bouge plus (on a parcouru la map)
+      if(backPositionX == (dogInfos->entity).positionX && backPositionY == (dogInfos->entity).positionY && isDogReady){
         //Vider la sauvegarde de position
         backPositionBeforeChaseX = 0;
         backPositionBeforeChaseY = 0;
