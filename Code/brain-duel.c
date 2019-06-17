@@ -319,7 +319,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
       if (isTargetPositionReached(dogInfos)){
         dogInfos->state = 1;
-        printf("state dog bien modifié\n");
+        printf("Dog state = 1\n");
       }
     }
 
@@ -328,7 +328,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
       int tmpIdSheep;
       //Chercher si une brebis est visible
-      for(int i = 0;i<numberOfEntity;i++){
+      for(int i = 0; i < numberOfEntity; i++){
 
         //Si c'est une brebis
         if(entityAround[i].nickname[0] == 'b' && entityAround[i].nickname[1] == 'o' && entityAround[i].nickname[2] == 't'){
@@ -366,9 +366,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
           dogInfos->targetPositionX = entityAround[tmpIdSheep].positionX;
           dogInfos->targetPositionY = (dogInfos->entity).positionY-(dogInfos->actionRange)/2;
           dogInfos->state = 3;
-          if (isTargetPositionReached(dogInfos)){
-
-          }
     }
 
 
@@ -388,16 +385,20 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
           dogInfos->targetPositionX = entityAround[tmpIdSheep].positionX;
           dogInfos->targetPositionY = entityAround[tmpIdSheep].positionY;
 
-        } else {
-
         }
-        }
-        int posX = entityAround[dogInfos->targetedSheepId].positionX;
-        int posY = entityAround[dogInfos->targetedSheepId].positionY;
+      }
+        int tmpIdSheep = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
 
-        printf("pos X = %d ; pos Y = %d\n",posX,posY);
+        int Sheep_X = entityAround[tmpIdSheep].positionX;
+        int Sheep_Y = entityAround[tmpIdSheep].positionY;
+        int Dog_X = (dogInfos->entity).positionX;
+        int Dog_Y = (dogInfos->entity).positionY;
+        int Dog_TX = dogInfos->targetPositionX;
+        int Dog_TY = dogInfos->targetPositionY;
 
-        if(!(isInBase(posX,posY))){
+        printf("Sheep_X = %d ; Sheep_Y = %d\n",Sheep_X,Sheep_Y);
+
+        if((!(isInBase(Sheep_X,Sheep_Y)) && (dogInfos->targetedSheepId != 0) && (tmpIdSheep != -1)) || ((isPushingPositionReached(Dog_X,Dog_Y,Dog_TX,Dog_TY) && (dogInfos->state == 4)))){
          // Brebis en position
 
         // Arreter la chasse
