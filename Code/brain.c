@@ -12,11 +12,6 @@
 #include "map.h"
 
 #define TIME_UNTIL_SYNCH 15
-#define BASE_SIDE 0
-/********
-\ 0 : Base a gauche
-\ 1 : Base a droite
-********/
 
 int generateRandomPosition(int lower,int upper){
   struct timespec ts;
