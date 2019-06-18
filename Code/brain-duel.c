@@ -13,10 +13,11 @@
 #include "map.h"
 
 /***************************
-\Strategie pour les chiens Verts et Jaune
+\Stratégie d'extraction des brebis de l'enclos en mode duel pour Red et Cyan
 ****************************/
 void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 {
+  if ((dogInfos->dogType == 2) || (dogInfos->dogType == 3)) {
 
     //Infiltration vers l'enclos adverse
     if(dogInfos->state == 0){
@@ -116,5 +117,5 @@ void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity
         //Partir ailleurs
         printf("Fin de la chasse\n");
       }
-
+    }
   }
