@@ -1,0 +1,15 @@
+
+25 minutes
+15 minutes Présentation des algos et stratégie
+(pas trop long car c'est dans le doc de conception)
++ Présentation du code
+	Structure des fichiers
+	Structure de données
+	Découpage en fonction
++ Présentation des méthodes et outils utilisés
+
+5 minutes questions : choix d'un exemple dans le code source et analyse 
+
+5 minutes de démo
+
+Ordre interchangeable
