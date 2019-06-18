@@ -651,7 +651,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
         //Aller au meetPoint
         dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
-        dogInfos->targetPositionY = (MAP_SIZE_Y/2)+100;
+        dogInfos->targetPositionY = (MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+100;
       }
 
       //Etat initial (attente de trouver le partenaire)
@@ -689,7 +689,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
               //En X
               if(entityAround[tmpId].positionX >= MAP_SIZE_X-ENTITY_SIZE-POSITION_MARGIN && entityAround[tmpId].positionX <= MAP_SIZE_X-ENTITY_SIZE+POSITION_MARGIN){
                 //En Y
-                if(entityAround[tmpId].positionY <= MAP_SIZE_Y/2+100+POSITION_MARGIN && entityAround[tmpId].positionY >= MAP_SIZE_Y/2+100-POSITION_MARGIN){
+                if(entityAround[tmpId].positionY <= (MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+100+POSITION_MARGIN && entityAround[tmpId].positionY >= (MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+100-POSITION_MARGIN){
                   printf("Waiting sheeps\n");
                   int sheepInFront = 0;
                   //Pour toutes les entités
@@ -756,21 +756,21 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         /////////////////Point 1
         if(dogInfos->state == 3){//Si on est celui du dessus
           dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
-          dogInfos->targetPositionY = MAP_SIZE_Y/2+100-(dogInfos->actionRange);
+          dogInfos->targetPositionY = (MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+100-(dogInfos->actionRange);
         }
         if(dogInfos->state == 13){//Si on est celui du dessous
           dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
-          dogInfos->targetPositionY = MAP_SIZE_Y/2+100+(dogInfos->actionRange);
+          dogInfos->targetPositionY = (MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+100+(dogInfos->actionRange);
         }
 
         //////////////Point 3
         if(dogInfos->state == 6){//Si on est celui du dessus
           dogInfos->targetPositionX = ENTITY_SIZE;
-          dogInfos->targetPositionY = MAP_SIZE_Y/2;
+          dogInfos->targetPositionY = (MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+100-(dogInfos->actionRange)-300;
         }
         if(dogInfos->state == 16){//Si on est celui du dessous
           dogInfos->targetPositionX = ENTITY_SIZE;
-          dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;
+          dogInfos->targetPositionY = (MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+100+(dogInfos->actionRange)+300;
         }
 
         ////////////Point 4

@@ -47,7 +47,7 @@ char *nicknames[] = {
     "yellow1"
 };
 
-int actionRanges[] = {0,100,60,300,100,100};
+int actionRanges[] = {0,250,60,300,100,100};
 
 
 
