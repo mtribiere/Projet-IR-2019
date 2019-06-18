@@ -12,6 +12,52 @@
 #include "brain.h"
 #include "map.h"
 
+
+int generatePositionAroundBaseX(int lower,int upper){
+  struct timespec ts;
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  srand((time_t)ts.tv_nsec);
+
+  int positionX = (rand() % (upper - lower + 1)) + lower;
+
+  // Si on est du côté gauche, l'enclos adverse est à droite
+  if(BASE_SIDE == 1){
+    while(positionX < MAP_SIZE_X - 200 || positionX > MAP_SIZE_X - 100){
+      positionX = generatePositionAroundBaseX(lower, upper);
+    }
+  }
+  if(BASE_SIDE == 2){
+    while(positionX > 200 || positionX < 100){
+      positionX = generatePositionAroundBaseX(lower, upper);
+    }
+  }
+
+  return positionX;
+}
+
+
+int generatePositionAroundBaseY(int lower,int upper){
+  struct timespec ts;
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  srand((time_t)ts.tv_nsec);
+
+  int positionY = (rand() % (upper - lower + 1)) + lower;
+
+  // Quel que soit notre côté
+  while(positionY < MAP_SIZE_X/20 || positionY > MAP_SIZE_X/10){
+      positionY = generatePositionAroundBaseY(lower, upper);
+  }
+
+  return positionY;
+}
+
+
+
+
+
+
+
+
 /***************************
 \Stratégie d'extraction des brebis de l'enclos en mode duel pour Red et Cyan
 ****************************/
@@ -193,8 +239,8 @@ void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity
        }else{ //Si aucune brebis visible ou qu'elle est déjà dans l'enclos
         //Si on est arrivé a destination
         if(isTargetPositionReached(dogInfos)){
-          dogInfos->targetPositionX = generatePositionAroundBase(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
-          dogInfos->targetPositionY = generatePositionAroundBase(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
+          dogInfos->targetPositionX = generatePositionAroundBaseX(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
+          dogInfos->targetPositionY = generatePositionAroundBaseY(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
         }
       }
     }
@@ -221,8 +267,8 @@ void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity
           dogInfos->state=3;
         }
       }else{ //On est dans l'enclos donc la brebis aussi
-        dogInfos->targetPositionX = generatePositionAroundBase(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
-        dogInfos->targetPositionY = generatePositionAroundBase(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
+        dogInfos->targetPositionX = generatePositionAroundBaseX(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
+        dogInfos->targetPositionY = generatePositionAroundBaseY(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
       }
 
       //Si on est aligné
@@ -234,8 +280,8 @@ void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity
              printf("\n\n On repart à la chasse de manière random \n\n");
              dogInfos->state = 0;
              dogInfos->targetedSheepId = 0;
-             dogInfos->targetPositionX = generatePositionAroundBase(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
-             dogInfos->targetPositionY = generatePositionAroundBase(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
+             dogInfos->targetPositionX = generatePositionAroundBaseX(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
+             dogInfos->targetPositionY = generatePositionAroundBaseY(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
            }else{ // Sinon le chien n'est pas dans l'enclos
              dogInfos->state = 4; // On passe a l'état de déplacement de brebis
              /*
@@ -255,8 +301,8 @@ void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity
          // On repart en chasse
          dogInfos->state = 0;
          dogInfos->targetedSheepId = 0;
-         dogInfos->targetPositionX = generatePositionAroundBase(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
-         dogInfos->targetPositionY = generatePositionAroundBase(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
+         dogInfos->targetPositionX = generatePositionAroundBaseX(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
+         dogInfos->targetPositionY = generatePositionAroundBaseY(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
        }else{
          //Si la brebis n'est pas dans l'enclos
          unsigned int distance = sqrt(pow(entityAround[tmpIdSheep].positionX,2)+pow(abs(MAP_SIZE_Y/2 - entityAround[tmpIdSheep].positionY),2));
@@ -281,8 +327,8 @@ void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity
             dogInfos->targetedSheepId = 0;
 
             // Partir ailleurs
-            dogInfos->targetPositionX = generatePositionAroundBase(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
-            dogInfos->targetPositionY = generatePositionAroundBase(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
+            dogInfos->targetPositionX = generatePositionAroundBaseX(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
+            dogInfos->targetPositionY = generatePositionAroundBaseY(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
           }
         }
      }
