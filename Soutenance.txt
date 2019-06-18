@@ -1,1 +1,8 @@
-Présentation :
+Différences entre la version pratique et la version théorique de l'étape 1 :
+
+- On est passé à deux chiens verts plutôt qu'un chien jaune pour ramener les brebis
+- L'exploration de la carte se fait sans aucune donnée en mémoire (pas de tableaux)
+- Plutôt que de s'éviter les uns les autres, les chiens explorateurs (violets) coopèrent
+
+Pas d'autre différence notable 
+
