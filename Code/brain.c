@@ -13,10 +13,10 @@
 #include "map.h"
 
 #define TIME_UNTIL_SYNCH 15
-#define BASE_SIDE 0
+#define BASE_SIDE 1
 /********
-\ 0 : Base a gauche
-\ 1 : Base a droite
+\ 1 : Base a gauche
+\ 2 : Base a droite
 ********/
 
 int generateRandomPosition(int lower,int upper){
@@ -205,7 +205,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 {
 
 
-  //Si on est un chien Violet (Simple carré haut ou bas)
+  //Si on est un chien Vert (Simple carré haut ou bas)
   if(dogInfos->dogType == 1){
 
     //Si un partenaire n'a pas été trouvé
@@ -613,8 +613,104 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     backPositionY = (dogInfos->entity).positionY;
   }
 
-  //Pour la strageie en duel
-  if(dogInfos->dogType == 2 || dogInfos->dogType == 3){
+  //Si c'est un bleu
+  if(dogInfos->dogType == 0){
+
+    //Si on recherche les Verts
+    if(dogInfos->state == 0){
+      //Se placer a proximité du passage des verts
+      dogInfos->targetPositionX = 2*(MAP_SIZE_X/3);
+      dogInfos->targetPositionY = MAP_SIZE_Y/2;
+
+      //Pour toutes les entités présentes
+      for(int i = 0;i<numberOfEntity;i++){
+        //Si c'est un vert
+        if(strcmp(entityAround[i].nickname,"green") == 0){
+          dogInfos->state = 1;
+          dogInfos->targetedSheepId = entityAround[i].ID;
+        }
+      }
+    }
+
+
+    //Si on a trouvé des verts
+    if(dogInfos->state == 1){
+        //Trouver le l'id du vert
+        int tmpIdGreen = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
+
+        //Si on voit toujours le vert
+        if(tmpIdGreen != -1){
+
+          //Parmis toutes les entités présentes
+          for(int i = 0;i<numberOfEntity;i++){
+            //Si on voit un jaune
+            if(strcmp(entityAround[i].nickname,"yellow") == 0 || strcmp(entityAround[i].nickname,"yellow2") == 0){
+              //Commencer le pattern
+              dogInfos->state = 2;
+            }
+          }
+
+          //Si on ne voit pas de jaune
+          if(dogInfos->state == 1){
+            dogInfos->targetPositionX = entityAround[tmpIdGreen].positionX-10;
+            dogInfos->targetPositionY = (dogInfos->entity).positionY;
+          }
+
+        }else{//Si on ne voit plus le vert
+          dogInfos->targetedSheepId = 0;
+          dogInfos->state = 0;
+        }
+      }
+
+      printf("Dog state : %d\n",dogInfos->state);
+
+      //Etape 1 du pattern
+      if(dogInfos->state == 2){
+
+        //Aller au point
+        dogInfos->targetPositionX = MAP_SIZE_X/2;
+        dogInfos->targetPositionY = (MAP_SIZE_Y/2)-400;
+
+
+
+        //Si on a atteint le point
+        if(isTargetPositionReached(dogInfos)){
+          //Chercher les verts
+          int tmpIdGreen = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
+
+          //Si on voit toujours les verts
+          if(tmpIdGreen != -1){
+            dogInfos->state = 3;
+          }else{//Si on ne voit plus les verts
+            dogInfos->state = 0;
+            dogInfos->targetedSheepId = 0;
+          }
+
+        }
+
+      }
+
+      printf("Dog state : %d\n",dogInfos->state);
+
+      //Etape 2 du pattern
+      if(dogInfos->state == 3){
+
+        //Aller au point
+        dogInfos->targetPositionX = MAP_SIZE_X/2;
+        dogInfos->targetPositionY = (MAP_SIZE_Y/2)-200;
+
+
+        //Si on a atteint le point
+        if(isTargetPositionReached(dogInfos)){
+          dogInfos->state = 2;
+        }
+        printf("patternState : %d\n",dogInfos->state);
+
+      }
+  }
+
+  //Pour la strategie en duel
+  if(dogInfos->dogType == 2 || dogInfos->dogType == 3 || dogInfos->dogType == 5){
     computeStrategyDuel(dogInfos,entityAround,numberOfEntity);
   }
 }

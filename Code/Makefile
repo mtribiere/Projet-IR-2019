@@ -20,7 +20,7 @@ affiche: spectacle
 	gnome-terminal -e "./spectacle -s -p 2001 192.168.130.114"
 
 test: sock
-	./sock -V -p 2001 -o agar.io 192.168.130.114
+	./sock -B -p 2001 -o agar.io 192.168.130.114
 
 multi : sock
 	gnome-terminal --tab-with-profile="sheep" -e "./sock -p 2001 -o agar.io 192.168.130.114"
