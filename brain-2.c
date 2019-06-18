@@ -14,6 +14,91 @@
 #include "map.h"
 
 
+int generateRandomPosition(int lower,int upper){
+  struct timespec ts;
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  srand((time_t)ts.tv_nsec);
+
+  return (rand() % (upper - lower + 1)) + lower;
+}
+
+int isTargetPositionReached(Dog *dogInfos){
+
+  int toReturn = 0;
+
+  //Si on a atteint la destination en X
+  if((dogInfos->entity).positionX <= (dogInfos->targetPositionX)+POSITION_MARGIN && (dogInfos->entity).positionX >= (dogInfos->targetPositionX)-POSITION_MARGIN){
+    //Si on atteint la destination en Y
+    if((dogInfos->entity).positionY <= (dogInfos->targetPositionY)+POSITION_MARGIN && (dogInfos->entity).positionY >= (dogInfos->targetPositionY)-POSITION_MARGIN){
+      toReturn = 1;
+    }
+  }
+
+  return toReturn;
+}
+
+int isPushingPositionReached(int positionX,int positionY,int targetPositionX,int targetPositionY){
+  int toReturn = 0;
+
+  //Si on a atteint la destination en X
+  if(positionX <= targetPositionX+PUSHING_MARGIN && positionX >= targetPositionX-PUSHING_MARGIN){
+    //Si on atteint la destination en Y
+    if(positionY <= targetPositionY+PUSHING_MARGIN && positionY >= targetPositionY-PUSHING_MARGIN){
+      toReturn = 1;
+    }
+  }
+
+  return toReturn;
+}
+
+int isInBase(int positionX,int positionY){
+  int toReturn = 0;
+
+  if(sqrt(pow(positionX,2)+pow(abs(MAP_SIZE_Y/2-positionY),2)) <= MAP_SIZE_X/10)
+    toReturn = 1;
+  /*if(positionX >= 0 && positionX <= MAP_SIZE_X/10 && positionY >= MAP_SIZE_Y/2-MAP_SIZE_X/10 && positionY <= MAP_SIZE_Y/2+MAP_SIZE_X/10)
+    toReturn = 1;*/
+
+  return toReturn;
+}
+
+//0 : X , 1 : Y
+int positionClamp(int targetPosition,int type){
+    int positionToReturn = targetPosition;
+
+    //Si c'est une position X
+    if(type == 0){
+
+        //Si inférieur à la limite
+        if(targetPosition < ENTITY_SIZE) positionToReturn = ENTITY_SIZE;
+        //Si supérieur à la limite
+        if(targetPosition > MAP_SIZE_X - ENTITY_SIZE) positionToReturn = MAP_SIZE_X-ENTITY_SIZE;
+
+    }
+
+    //Si c'est un positionY
+    if(type == 1){
+
+        //Si inférieur à la limite
+        if(targetPosition < ENTITY_SIZE) positionToReturn = ENTITY_SIZE;
+        //Si supérieur à la limite
+        if(targetPosition > MAP_SIZE_Y - ENTITY_SIZE) positionToReturn = MAP_SIZE_Y-ENTITY_SIZE;
+
+    }
+
+    return positionToReturn;
+}
+
+int findIdOfSheep(Entity *entityAround,int numberOfEntity,int idToFind){
+
+  int idToReturn = -1;
+  for(int i = 0;i<numberOfEntity;i++){
+    if(entityAround[i].ID == idToFind) idToReturn = i;
+  }
+
+  return idToReturn;
+}
+
 int isYellowIn(Dog *dogInfos,Entity *entityAround,int numberOfEntity){
 
   int i;
