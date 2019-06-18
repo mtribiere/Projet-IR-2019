@@ -52,13 +52,31 @@ int generatePositionAroundBaseY(int lower,int upper){
   return positionY;
 }
 
-int isEntityInBase(Entity entity){
+int isPushingPositionReached(int positionX,int positionY,int targetPositionX,int targetPositionY){
   int toReturn = 0;
-  unsigned int distance = sqrt(pow(entity.positionX,2)+pow(abs(MAP_SIZE_Y/2 - entity.positionY),2));
-  if(distance < MAP_SIZE_X/10) toReturn = 1;
+
+  //Si on a atteint la destination en X
+  if(positionX <= targetPositionX+PUSHING_MARGIN && positionX >= targetPositionX-PUSHING_MARGIN){
+    //Si on atteint la destination en Y
+    if(positionY <= targetPositionY+PUSHING_MARGIN && positionY >= targetPositionY-PUSHING_MARGIN){
+      toReturn = 1;
+    }
+  }
 
   return toReturn;
 }
+
+int isInBase(int positionX,int positionY){
+  int toReturn = 0;
+
+  if(sqrt(pow(positionX,2)+pow(abs(MAP_SIZE_Y/2-positionY),2)) <= MAP_SIZE_X/10)
+    toReturn = 1;
+  /*if(positionX >= 0 && positionX <= MAP_SIZE_X/10 && positionY >= MAP_SIZE_Y/2-MAP_SIZE_X/10 && positionY <= MAP_SIZE_Y/2+MAP_SIZE_X/10)
+    toReturn = 1;*/
+
+  return toReturn;
+}
+
 
 /***************************
 \Stratégie d'extraction des brebis de l'enclos en mode duel pour Red et Cyan
