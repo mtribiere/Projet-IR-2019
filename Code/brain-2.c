@@ -10,6 +10,7 @@
 #include <time.h>
 
 #include "entity.h"
+#include "brain.h"
 #include "map.h"
 
 
@@ -113,7 +114,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
   // FREINE LES VERTS STP ILS SONT TROP RAPIDES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  if(dogInfos->dogType == 1 || dogInfos->dogType == 4)
+  if(dogInfos->dogType == 4)
   {
     //Si on est en recherche de brebis
     if(dogInfos->state == 0){
@@ -439,21 +440,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // Si on est un chien jaune : on va au centre de la map et on attend
     // Lorsqu'on voit un bleu : on sélectionne un jaune pour bouger
     // Ce jaune partira dans la direction du bleu jusqu'à rencontre une brebis ou arriver au bout de la map
@@ -468,7 +454,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
       // Quel que soit l'état, si on a rencontré un problème
       // On revient vers le centre
-      if(((dogInfos->targetPositionX > (MAP_SIZE_X - dogInfos->actionRange)) || ((dogInfos->targetPositionY > (MAP_SIZE_Y - dogInfos->actionRange)) || ((dogInfos->targetPositionX < dogInfos->actionRange) || ((dogInfos->targetPositionY < dogInfos->actionRange)){
+      if( (dogInfos->targetPositionX > (MAP_SIZE_X - dogInfos->actionRange)) || (dogInfos->targetPositionY > (MAP_SIZE_Y - dogInfos->actionRange)) || (dogInfos->targetPositionX < dogInfos->actionRange) || (dogInfos->targetPositionY < dogInfos->actionRange) ){
         dogInfos->targetPositionX = MAP_SIZE_X/2;
         dogInfos->targetPositionY = MAP_SIZE_Y/2;
       }
@@ -656,4 +642,146 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
             }
           }
     }
+
+    //Si on est un chien Vert (Simple carré haut ou bas)
+    if(dogInfos->dogType == 1){
+
+      //Si un partenaire n'a pas été trouvé
+      if(dogInfos->targetedSheepId == 0){
+
+        //Aller au meetPoint
+        dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+        dogInfos->targetPositionY = (MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+100;
+      }
+
+      //Etat initial (attente de trouver le partenaire)
+      if(dogInfos->state == 0){
+
+        //Detecter si il y a un partenaire
+        for(int i = 0;i<numberOfEntity;i++){
+          //Si c'est un partenaire
+          if(entityAround[i].nickname[0] == 'g' && entityAround[i].nickname[1] == 'r' && entityAround[i].nickname[2] == 'e' && entityAround[i].ID != (dogInfos->entity).ID){
+            //Le cibler
+            dogInfos->targetedSheepId = entityAround[i].ID;
+
+            //Determiner les rôles
+            if(entityAround[i].ID < (dogInfos->entity).ID){//Si son ID est plus petit
+              dogInfos->state = 11;
+            }else{//Si il est plus grand
+              dogInfos->state = 1;
+            }
+          }
+        }
+      }
+
+      //Si un partenaire a été trouvé
+      if(dogInfos->state == 1 || dogInfos->state == 11){
+
+        //Si on a atteint le meetPoint
+        if(isTargetPositionReached(dogInfos)){
+          printf("Waiting parterner positionned\n");
+
+            //Si le partenaire est en place
+            int tmpId = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
+
+            //Si pas d'erreur de synchronisation
+            if(tmpId != -1){
+              //En X
+              if(entityAround[tmpId].positionX >= MAP_SIZE_X-ENTITY_SIZE-POSITION_MARGIN && entityAround[tmpId].positionX <= MAP_SIZE_X-ENTITY_SIZE+POSITION_MARGIN){
+                //En Y
+                if(entityAround[tmpId].positionY <= MAP_SIZE_Y/2+100+POSITION_MARGIN && entityAround[tmpId].positionY >= MAP_SIZE_Y/2+100-POSITION_MARGIN){
+                  printf("Waiting sheeps\n");
+                  int sheepInFront = 0;
+                  //Pour toutes les entités
+                  for(int i = 0;i<numberOfEntity;i++){
+                    //Si on voit une brebis
+                    if(strstr(entityAround[i].nickname,"bot") != NULL){
+                      //Si elle est devant nous
+                      if(entityAround[i].positionY <= (dogInfos->entity).positionY+PUSHING_MARGIN && entityAround[i].positionY >= (dogInfos->entity).positionY-PUSHING_MARGIN){
+                        sheepInFront = 1;
+                      }
+                    }
+                  }
+
+                  //Si une brebis est devant nous
+                  if(sheepInFront){
+                    //Commencer le pattern
+                    (dogInfos->state)++;
+
+                    //Ne plus bouger
+                    dogInfos->targetPositionX = (dogInfos->entity).positionX;
+                    dogInfos->targetPositionY = (dogInfos->entity).positionY;
+                  }
+                }
+              }
+            }else{//Erreur de synchronisation
+              dogInfos->state = 0;
+              dogInfos->targetedSheepId = 0;
+            }
+          }
+      }
+      ////////////////Point 2 / Spécial
+      if(dogInfos->state == 4 || dogInfos->state == 14){//Si on est celui du dessus
+        //Si on a atteint la position X voulu
+        if((dogInfos->entity).positionX <= ENTITY_SIZE){
+
+          //Ne plus bouger et passer au point suivant
+          dogInfos->targetPositionX = (dogInfos->entity).positionX;
+          dogInfos->targetPositionY = (dogInfos->entity).positionY;
+
+          //Passer à l'etat suivant
+          (dogInfos->state)++;
+
+        }else{//Si on a pas atteint la position
+          dogInfos->targetPositionX = (dogInfos->entity).positionX - PUSHING_FORCE;//Vitesse de déplacment
+          dogInfos->targetPositionY = (dogInfos->entity).positionY;
+        }
+      }
+
+
+      if(dogInfos->state != 0 && dogInfos->state != 1 && dogInfos->state != 11 && dogInfos->state != 4 && dogInfos->state != 14 && isTargetPositionReached(dogInfos)){
+        //Passer au point suivant
+        (dogInfos->state)++;
+
+        //Boucler
+        if(dogInfos->state == 7){
+          dogInfos->state = 0;
+          dogInfos->targetedSheepId = 0;
+        }
+        if(dogInfos->state == 17){
+          dogInfos->state = 0;
+          dogInfos->targetedSheepId = 0;
+        }
+
+        /////////////////Point 1
+        if(dogInfos->state == 3){//Si on est celui du dessus
+          dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+          dogInfos->targetPositionY = MAP_SIZE_Y/2+100-(dogInfos->actionRange);
+        }
+        if(dogInfos->state == 13){//Si on est celui du dessous
+          dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+          dogInfos->targetPositionY = MAP_SIZE_Y/2+100+(dogInfos->actionRange);
+        }
+
+        //////////////Point 3
+        if(dogInfos->state == 6){//Si on est celui du dessus
+          dogInfos->targetPositionX = ENTITY_SIZE;
+          dogInfos->targetPositionY = MAP_SIZE_Y/2;
+        }
+        if(dogInfos->state == 16){//Si on est celui du dessous
+          dogInfos->targetPositionX = ENTITY_SIZE;
+          dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;
+        }
+
+        ////////////Point 4
+        if(dogInfos->state == 7){//Si on est celui du dessus
+          dogInfos->targetPositionX = (MAP_SIZE_X/2)-300;
+          dogInfos->targetPositionY = ENTITY_SIZE;
+        }
+        if(dogInfos->state == 17){//Si on est celui du dessous
+          dogInfos->targetPositionX = (MAP_SIZE_X/2)-300;
+          dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;
+        }
+      }
+  }
 }
