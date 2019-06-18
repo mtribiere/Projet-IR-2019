@@ -207,7 +207,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     if(dogInfos->targetedSheepId == 0){
 
       //Aller au meetPoint
-      dogInfos->targetPositionX = MAP_SIZE_X/2;
+      dogInfos->targetPositionX = MAP_SIZE_X/2-300;
       dogInfos->targetPositionY = MAP_SIZE_Y/2;
     }
 
@@ -235,19 +235,16 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     if(dogInfos->state == 1 || dogInfos->state == 11){
 
       //Si on a atteint le meetPoint
-      //En X
-      if((dogInfos->entity).positionX>=MAP_SIZE_X-ENTITY_SIZE-POSITION_MARGIN){
-        //En Y
-        if((dogInfos->entity).positionY <= MAP_SIZE_Y/2+POSITION_MARGIN && (dogInfos->entity).positionY >= MAP_SIZE_Y/2-POSITION_MARGIN){
+      if(isTargetPositionReached(dogInfos)){
+        printf("Waiting parterner positionned\n");
 
           //Si le partenaire est en place
           int tmpId = findIdOfSheep(entityAround,numberOfEntity,dogInfos->targetedSheepId);
 
           //Si pas d'erreur de synchronisation
           if(tmpId != -1){
-            printf("Waiting parterner\n");
             //En X
-            if(entityAround[tmpId].positionX >= MAP_SIZE_X-ENTITY_SIZE-POSITION_MARGIN){
+            if(entityAround[tmpId].positionX >= (MAP_SIZE_X/2)-300-POSITION_MARGIN && entityAround[tmpId].positionX <= (MAP_SIZE_X/2)-300+POSITION_MARGIN){
               //En Y
               if(entityAround[tmpId].positionY <= MAP_SIZE_Y/2+POSITION_MARGIN && entityAround[tmpId].positionY >= MAP_SIZE_Y/2-POSITION_MARGIN){
                 //Commencer le pattern
@@ -263,7 +260,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
             dogInfos->targetedSheepId = 0;
           }
         }
-      }
     }
     ////////////////Point 2 / Spécial
     if(dogInfos->state == 4 || dogInfos->state == 14){//Si on est celui du dessus
@@ -278,7 +274,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         (dogInfos->state)++;
 
       }else{//Si on a pas atteint la position
-        dogInfos->targetPositionX = (dogInfos->entity).positionX -20;//Vitesse de déplacment
+        dogInfos->targetPositionX = (dogInfos->entity).positionX - PUSHING_FORCE;//Vitesse de déplacment
         dogInfos->targetPositionY = (dogInfos->entity).positionY;
       }
     }
@@ -300,11 +296,11 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
       /////////////////Point 1
       if(dogInfos->state == 3){//Si on est celui du dessus
-        dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+        dogInfos->targetPositionX = (MAP_SIZE_X/2)-300;
         dogInfos->targetPositionY = MAP_SIZE_Y/2-(dogInfos->actionRange);
       }
       if(dogInfos->state == 13){//Si on est celui du dessous
-        dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+        dogInfos->targetPositionX = (MAP_SIZE_X/2)-300;
         dogInfos->targetPositionY = MAP_SIZE_Y/2+(dogInfos->actionRange);
       }
 
@@ -320,11 +316,11 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
       ////////////Point 4
       if(dogInfos->state == 7){//Si on est celui du dessus
-        dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+        dogInfos->targetPositionX = (MAP_SIZE_X/2)-300;
         dogInfos->targetPositionY = ENTITY_SIZE;
       }
       if(dogInfos->state == 17){//Si on est celui du dessous
-        dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+        dogInfos->targetPositionX = (MAP_SIZE_X/2)-300;
         dogInfos->targetPositionY = MAP_SIZE_Y-ENTITY_SIZE;
       }
     }
@@ -555,24 +551,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         //Se declarer en mode aléatoire
         patternState = 4;
       }
-
-/*
-      //Eviter de percuter un autre blanc
-      for(int i = 0;i<numberOfEntity;i++){
-        //Si il y a un mouton
-        if(entityAround[i].nickname[0] == 'b' && entityAround[i].nickname[1] == 'o' && entityAround[i].nickname[2] == 't'){
-
-          //L'éviter
-          dogInfos->targetPositionX = positionClamp((dogInfos->entity).positionX+2*(dogInfos->actionRange),0);
-
-          if((dogInfos->entity).positionY < MAP_SIZE_Y/2){//Si on est en haut
-              dogInfos->targetPositionY = (dogInfos->entity).positionY-(dogInfos->actionRange);
-          }else{ //Si on est en bas
-            dogInfos->targetPositionY = positionClamp((dogInfos->entity).positionY+(dogInfos->actionRange),1);
-          }
-
-        }
-      }*/
     }
 
     //Si on est en sécurité
@@ -607,7 +585,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     //Si on recherche les Verts
     if(dogInfos->state == 0){
       //Se placer a proximité du passage des verts
-      dogInfos->targetPositionX = 2*(MAP_SIZE_X/3);
+      dogInfos->targetPositionX = (MAP_SIZE_X/3);
       dogInfos->targetPositionY = MAP_SIZE_Y/2;
 
       //Pour toutes les entités présentes
@@ -632,7 +610,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
           //Parmis toutes les entités présentes
           for(int i = 0;i<numberOfEntity;i++){
             //Si on voit un jaune
-            if(strcmp(entityAround[i].nickname,"yellow") == 0 || strcmp(entityAround[i].nickname,"yellow2") == 0){
+            if(strcmp(entityAround[i].nickname,"yellow1") == 0 || strcmp(entityAround[i].nickname,"yellow2") == 0){
               //Commencer le pattern
               dogInfos->state = 2;
             }
@@ -660,7 +638,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         dogInfos->targetPositionY = (MAP_SIZE_Y/2)-400;
 
 
-
         //Si on a atteint le point
         if(isTargetPositionReached(dogInfos)){
           //Chercher les verts
@@ -675,10 +652,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
           }
 
         }
-
       }
-
-      printf("Dog state : %d\n",dogInfos->state);
 
       //Etape 2 du pattern
       if(dogInfos->state == 3){
@@ -692,7 +666,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         if(isTargetPositionReached(dogInfos)){
           dogInfos->state = 2;
         }
-        printf("patternState : %d\n",dogInfos->state);
 
       }
   }
