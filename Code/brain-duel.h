@@ -1,5 +1,5 @@
-#ifndef BRAIN
-#define BRAIN
+#ifndef BRAIN_DUEL
+#define BRAIN_DUEL
 
 void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity);
 

@@ -12,39 +12,39 @@ int sizeOfConnectionStart2 = 5;
 
 
 unsigned char blue[] = {00,
-                        98,108,117,101,
+                        98,108,117,101,49,
                         00};
 
 unsigned char green[] = {00,
-                        103,114,101,101,110,
+                        103,114,101,101,110,49,
                         00};
 
 unsigned char red[] = {00,
-                       114,101,100,
+                       114,101,100,49,
                        00};
 
 unsigned char cyan[] = {00,
-                        99,121,97,110,
+                        99,121,97,110,49,
                         00};
 
 unsigned char purple[] = {00,
-                         112,117,114,112,108,101,
+                         112,117,114,112,108,101,49,
                          00};
 
 unsigned char yellow[] = {00,
-                         121,101,108,108,111,119,
+                         121,101,108,108,111,119,49,
                          00};
 
 
 unsigned char *colorPackets[] = {blue,green,red,cyan,purple,yellow};
-int sizeOfColorPackets[] = {6,7,5,6,8,8};
+int sizeOfColorPackets[] = {7,8,6,7,9,9};
 char *nicknames[] = {
-    "blue",
-    "green",
-    "red",
-    "cyan",
-    "purple",
-    "yellow"
+    "blue1",
+    "green1",
+    "red1",
+    "cyan1",
+    "purple1",
+    "yellow1"
 };
 
 int actionRanges[] = {0,250,60,300,100,100};

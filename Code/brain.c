@@ -9,15 +9,10 @@
 #include <math.h>
 
 #include "entity.h"
+#include "brain.h"
 #include "brain-duel.h"
 #include "map.h"
 
-#define TIME_UNTIL_SYNCH 15
-#define BASE_SIDE 1
-/********
-\ 1 : Base a gauche
-\ 2 : Base a droite
-********/
 
 int generateRandomPosition(int lower,int upper){
   struct timespec ts;

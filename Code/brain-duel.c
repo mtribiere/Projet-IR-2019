@@ -10,6 +10,7 @@
 
 #include "entity.h"
 #include "brain.h"
+#include "brain-duel.h"
 #include "map.h"
 
 
@@ -22,7 +23,7 @@ int generatePositionAroundBaseX(int lower,int upper){
 
   // Si on est du côté gauche, l'enclos adverse est à droite
   if(BASE_SIDE == 1){
-    while(positionX < MAP_SIZE_X - 200 || positionX > MAP_SIZE_X - 100){
+    while(positionX < MAP_SIZE_X - 200 || positionX > MAP_SIZE_X - 100){
       positionX = generatePositionAroundBaseX(lower, upper);
     }
   }
@@ -44,19 +45,20 @@ int generatePositionAroundBaseY(int lower,int upper){
   int positionY = (rand() % (upper - lower + 1)) + lower;
 
   // Quel que soit notre côté
-  while(positionY < MAP_SIZE_X/20 || positionY > MAP_SIZE_X/10){
+  while(positionY < MAP_SIZE_X/20 || positionY > MAP_SIZE_X/10){
       positionY = generatePositionAroundBaseY(lower, upper);
   }
 
   return positionY;
 }
 
+int isEntityInBase(Entity entity){
+  int toReturn = 0;
+  unsigned int distance = sqrt(pow(entity.positionX,2)+pow(abs(MAP_SIZE_Y/2 - entity.positionY),2));
+  if(distance < MAP_SIZE_X/10) toReturn = 1;
 
-
-
-
-
-
+  return toReturn;
+}
 
 /***************************
 \Stratégie d'extraction des brebis de l'enclos en mode duel pour Red et Cyan
