@@ -264,12 +264,29 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
             if(entityAround[tmpId].positionX >= MAP_SIZE_X-ENTITY_SIZE-POSITION_MARGIN){
               //En Y
               if(entityAround[tmpId].positionY <= MAP_SIZE_Y/2+POSITION_MARGIN && entityAround[tmpId].positionY >= MAP_SIZE_Y/2-POSITION_MARGIN){
-                //Commencer le pattern
-                (dogInfos->state)++;
+                printf("Waiting blue\n");
+                int isBlueHere = 0;
+                //Pour toutes les entités
+                for(int i = 0;i<numberOfEntity;i++){
+                  //Si c'est un bleu
+                  if(strcmp(entityAround[i].nickname,"blue") == 0){
+                    //Si il est à la bonne position
+                    if(entityAround[i].positionX >= MAP_SIZE_X-ENTITY_SIZE){
+                      isBlueHere = 1;
+                    }
+                  }
+                }
 
-                //Ne plus bouger
-                dogInfos->targetPositionX = (dogInfos->entity).positionX;
-                dogInfos->targetPositionY = (dogInfos->entity).positionY;
+                //Si le bleu est revenu
+                if(isBlueHere){
+                  //Commencer le pattern
+                  (dogInfos->state)++;
+
+                  //Ne plus bouger
+                  dogInfos->targetPositionX = (dogInfos->entity).positionX;
+                  dogInfos->targetPositionY = (dogInfos->entity).positionY;
+                }
+
               }
             }
           }else{//Erreur de synchronisation
@@ -561,7 +578,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
         //Recommencer un pattern
         patternState = 3;
-        dogInfos->state = 0; 
+        dogInfos->state = 0;
       }
 
     }
@@ -590,5 +607,51 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     //Sauvergarder la position courante
     backPositionX = (dogInfos->entity).positionX;
     backPositionY = (dogInfos->entity).positionY;
+  }
+
+  //Si c'est un bleu
+  if(dogInfos->dogType == 0){
+
+    static int *sheepSeen;
+    static int sheepID;
+
+    //Initialisation du chien
+    if(dogInfos->state == 0){
+
+      //Declarer le tableau
+      sheepSeen = malloc(sizeof(int)*5);
+      sheepID = 0;
+
+      //Passer en recherche
+      dogInfos->state = 1;
+    }
+
+    //Point 1 du pattern
+    if(dogInfos->state == 1){
+
+      //Aller au point
+      dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE-100;
+      dogInfos->targetPositionY = MAP_SIZE_Y/2;
+
+      //Si on a atteint le point
+      if(isTargetPositionReached(dogInfos)){
+        dogInfos->state = 2;
+      }
+    }
+
+    //Point 2 du pattern
+    if(dogInfos->state == 2){
+
+      //Aller au point
+      dogInfos->targetPositionX = MAP_SIZE_X/10+(dogInfos->actionRange);
+      dogInfos->targetPositionY = MAP_SIZE_Y/2;
+
+      //Si on a atteint le point
+      if(isTargetPositionReached(dogInfos)){
+        dogInfos->state = 1;
+      }
+    }
+
+
   }
 }
