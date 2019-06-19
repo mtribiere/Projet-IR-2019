@@ -6,7 +6,6 @@
 #include "entity.h"
 
 #define TIME_UNTIL_SYNCH 15
-#define TIME_UNTIL_SYNCH_CYAN 120
 #define PUSHING_FORCE 20
 #define BASE_SIDE 1
 /********
@@ -22,10 +21,5 @@ int isEntityInBase(Entity entity);
 int isPushingPositionReached(int positionX,int positionY,int targetPositionX,int targetPositionY);
 int isTargetPositionReached(Dog *dogInfos);
 int generateRandomPosition(int lower,int upper);
-
-//Initialisation des variables de backup au cas où la brebis sort du champ de vision du chien (dans le mode duel)
-int Target_X_Backup;
-int Target_Y_Backup;
-int MateID;
 
 #endif
