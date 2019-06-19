@@ -687,7 +687,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         //Detecter si il y a un partenaire
         for(int i = 0;i<numberOfEntity;i++){
           //Si c'est un partenaire
-          if(entityAround[i].nickname[0] == 'g' && entityAround[i].nickname[1] == 'r' && entityAround[i].nickname[2] == 'e' && entityAround[i].ID != (dogInfos->entity).ID){
+          if((strcmp(entityAround[i].nickname,"green1") == 0 && BASE_SIDE == 1) || (strcmp(entityAround[i].nickname,"green2") == 0 && BASE_SIDE == 2)){
             //Le cibler
             dogInfos->targetedSheepId = entityAround[i].ID;
 
@@ -791,14 +791,11 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         }
 
         //////////////Point 3
-        if(dogInfos->state == 6){//Si on est celui du dessus
+        if(dogInfos->state == 6 || dogInfos->state == 16){//Si on est celui du dessus
           dogInfos->targetPositionX = ENTITY_SIZE;
           dogInfos->targetPositionY = (MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+100-(dogInfos->actionRange)-300;
         }
-        if(dogInfos->state == 16){//Si on est celui du dessous
-          dogInfos->targetPositionX = ENTITY_SIZE;
-          dogInfos->targetPositionY = (MAP_SIZE_Y/2)+(MAP_SIZE_X/10)+100+(dogInfos->actionRange)+300;
-        }
+
 
         ////////////Point 4
         if(dogInfos->state == 7){//Si on est celui du dessus
