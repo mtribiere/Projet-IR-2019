@@ -356,11 +356,8 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     static int attributionID;
 
 
-    //Si on est en attente de sychronisation avec les autres
+    //Initialisation du chien
     if(dogInfos->state == 0){
-      //Aller au meetPoint
-      dogInfos->targetPositionX = MAP_SIZE_X/2;
-      dogInfos->targetPositionY = MAP_SIZE_Y/2;
 
       srand((dogInfos->entity).ID);
       attributionID = rand()%3;
@@ -562,10 +559,11 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         backPositionBeforeChaseX = 0;
         backPositionBeforeChaseY = 0;
 
-        //Se declarer en mode aléatoire
-        patternState = 4;
+        //Recommencer un pattern
+        patternState = 3;
+        dogInfos->state = 0; 
       }
-      
+
     }
 
     //Si on est en sécurité
