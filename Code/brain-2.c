@@ -11,6 +11,7 @@
 
 #include "entity.h"
 #include "brain.h"
+#include "brain-duel.h"
 #include "map.h"
 
 
@@ -78,6 +79,32 @@ int isEntityInBase(Entity entity){
   return toReturn;
 }
 
+
+int positionClamp(int targetPosition,int type){
+    int positionToReturn = targetPosition;
+
+    //Si c'est une position X
+    if(type == 0){
+
+        //Si inférieur à la limite
+        if(targetPosition < ENTITY_SIZE) positionToReturn = ENTITY_SIZE;
+        //Si supérieur à la limite
+        if(targetPosition > MAP_SIZE_X - ENTITY_SIZE) positionToReturn = MAP_SIZE_X-ENTITY_SIZE;
+
+    }
+
+    //Si c'est un positionY
+    if(type == 1){
+
+        //Si inférieur à la limite
+        if(targetPosition < ENTITY_SIZE) positionToReturn = ENTITY_SIZE;
+        //Si supérieur à la limite
+        if(targetPosition > MAP_SIZE_Y - ENTITY_SIZE) positionToReturn = MAP_SIZE_Y-ENTITY_SIZE;
+
+    }
+
+    return positionToReturn;
+}
 
 
 
@@ -784,4 +811,10 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         }
       }
   }
+
+  //Pour la strategie en duel
+  if(dogInfos->dogType == 2 || dogInfos->dogType == 3 || dogInfos->dogType == 5){
+    computeStrategyDuel(dogInfos,entityAround,numberOfEntity);
+  }
+
 }
