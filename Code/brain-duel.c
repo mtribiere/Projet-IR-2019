@@ -111,9 +111,9 @@ void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity
 
           //Balayage terminé
           if (isTargetPositionReached(dogInfos)){
-            for (int i, i < numberOfEntity, i++){
+            for (int i; i < numberOfEntity; i++){
               if (entityAround[i].nickname[0] == 'g') {
-                if (entityAround[i].positionY <= MAP_SIZE_Y/2 + MAP_SIZE_X/10 + POSITION_MARGIN) && (entityAround[i].positionY <= MAP_SIZE_Y/2 + MAP_SIZE_X/10 - POSITION_MARGIN){
+                if ((entityAround[i].positionY <= MAP_SIZE_Y/2 + MAP_SIZE_X/10 + POSITION_MARGIN) && (entityAround[i].positionY <= MAP_SIZE_Y/2 + MAP_SIZE_X/10 - POSITION_MARGIN)){
                   dogInfos->state = 2;
                 }
               }
@@ -286,4 +286,5 @@ void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity
       }
     }
    }
- }
+  }
+}
