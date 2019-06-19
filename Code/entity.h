@@ -19,7 +19,6 @@ typedef struct dog{
   int targetedSheepId;
   int dogType;
   int actionRange;
-  time_t timer;
   unsigned int targetPositionX;
   unsigned int targetPositionY;
 }Dog;

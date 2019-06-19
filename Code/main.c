@@ -254,7 +254,6 @@ int main(int argc, char **argv)
 	dogInfos.state = 0;
 	dogInfos.targetPositionX = 0;
 	dogInfos.targetPositionY = 0;
-	dogInfos.timer = time(NULL);
 
 	int n = 0;
 

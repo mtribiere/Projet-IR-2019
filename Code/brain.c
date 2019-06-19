@@ -362,24 +362,20 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       dogInfos->targetPositionX = MAP_SIZE_X/2;
       dogInfos->targetPositionY = MAP_SIZE_Y/2;
 
-      //Si le timer arrive à la limite
-      if(time(NULL)-(dogInfos->timer) >= TIME_UNTIL_SYNCH){
-        //Se synchroniser
-        attributionID = purpleSynch(entityAround,numberOfEntity,(dogInfos->entity).ID);
-        dogInfos->state = 1;
+      srand((dogInfos->entity).ID);
+      attributionID = rand()%3;
+      dogInfos->state = 1;
 
-        //Definir le point de départ (Formule)
-        dogInfos->targetPositionX = ENTITY_SIZE;
-        dogInfos->targetPositionY = 1300*attributionID+650;
+      //Definir le point de départ (Formule)
+      dogInfos->targetPositionX = ENTITY_SIZE;
+      dogInfos->targetPositionY = 1300*attributionID+650;
 
-        //Definir le point de recovery
-        backPositionBeforeChaseX = ENTITY_SIZE;
-        backPositionBeforeChaseY = 1300*attributionID+650;
+      //Definir le point de recovery
+      backPositionBeforeChaseX = ENTITY_SIZE;
+      backPositionBeforeChaseY = 1300*attributionID+650;
 
-        //Donner la direction de départ
-        patternState = 3;
-
-      }
+      //Donner la direction de départ
+      patternState = 3;
     }
 
     if(dogInfos->state > 0){
@@ -427,10 +423,10 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
                   //Si elle est a notre droite
                   if(backTargetedSheepX >= (dogInfos->entity).positionX){
                     dogInfos->targetPositionX = backTargetedSheepX-3*(dogInfos->actionRange);
-                    dogInfos->targetPositionY = (dogInfos->entity).positionY;
+                    dogInfos->targetPositionY = backTargetedSheepY;
                   }else{ // Si elle est a notre gauche
                     dogInfos->targetPositionX = backTargetedSheepX+3*(dogInfos->actionRange);
-                    dogInfos->targetPositionY = (dogInfos->entity).positionY;
+                    dogInfos->targetPositionY = backTargetedSheepY;
                   }
 
                 }
@@ -569,24 +565,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         //Se declarer en mode aléatoire
         patternState = 4;
       }
-
-/*
-      //Eviter de percuter un autre blanc
-      for(int i = 0;i<numberOfEntity;i++){
-        //Si il y a un mouton
-        if(entityAround[i].nickname[0] == 'b' && entityAround[i].nickname[1] == 'o' && entityAround[i].nickname[2] == 't'){
-
-          //L'éviter
-          dogInfos->targetPositionX = positionClamp((dogInfos->entity).positionX+2*(dogInfos->actionRange),0);
-
-          if((dogInfos->entity).positionY < MAP_SIZE_Y/2){//Si on est en haut
-              dogInfos->targetPositionY = (dogInfos->entity).positionY-(dogInfos->actionRange);
-          }else{ //Si on est en bas
-            dogInfos->targetPositionY = positionClamp((dogInfos->entity).positionY+(dogInfos->actionRange),1);
-          }
-
-        }
-      }*/
+      
     }
 
     //Si on est en sécurité
