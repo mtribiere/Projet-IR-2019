@@ -69,10 +69,15 @@ int isPushingPositionReached(int positionX,int positionY,int targetPositionX,int
 int isInBase(int positionX,int positionY){
   int toReturn = 0;
 
-  if(sqrt(pow(positionX,2)+pow(abs(MAP_SIZE_Y/2-positionY),2)) <= MAP_SIZE_X/10)
-    toReturn = 1;
-  /*if(positionX >= 0 && positionX <= MAP_SIZE_X/10 && positionY >= MAP_SIZE_Y/2-MAP_SIZE_X/10 && positionY <= MAP_SIZE_Y/2+MAP_SIZE_X/10)
-    toReturn = 1;*/
+  if (BASE_SIDE == 1){
+    if(sqrt(pow(positionX,2)+pow(abs(MAP_SIZE_Y/2-positionY),2)) <= MAP_SIZE_X/10)
+      toReturn = 1;
+    }
+
+  if (BASE_SIDE == 2){
+    if(sqrt(pow(MAP_SIZE_X-positionX,2)+pow(abs(MAP_SIZE_Y/2-positionY),2)) <= MAP_SIZE_X/10)
+      toReturn = 1;
+    }
 
   return toReturn;
 }
