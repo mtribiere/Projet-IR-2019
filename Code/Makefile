@@ -1,5 +1,5 @@
-sock : main.o brain-duel.o networkAssistant.o utilityFunctions.o
-	gcc -Wall -lm -std=gnu99 -o $@  main.o brain-duel.o networkAssistant.o utilityFunctions.o -lwebsockets
+sock : main.o brain.o networkAssistant.o utilityFunctions.o
+	gcc -Wall -lm -std=gnu99 -o $@  main.o brain.o networkAssistant.o utilityFunctions.o -lwebsockets
 
 main.o: main.c
 	gcc -Wall -std=gnu99 -g -c $^
@@ -10,7 +10,7 @@ networkAssistant.o : networkAssistant.c
 utilityFunctions.o : utilityFunctions.c
 	gcc -Wall -std=gnu99 -g -c $^
 
-brain-duel.o: brain-duel.c
+brain.o: brain.c
 	gcc -Wall -std=gnu99 -g -c $^
 
 affiche: spectacle

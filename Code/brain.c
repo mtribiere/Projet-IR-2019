@@ -9,6 +9,7 @@
 #include <math.h>
 
 #include "entity.h"
+#include "brain.h"
 #include "map.h"
 
 #define TIME_UNTIL_SYNCH 15
@@ -281,7 +282,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     ////////////////Point 2 / Spécial
     if(dogInfos->state == 4 || dogInfos->state == 14){//Si on est celui du dessus
       //Si on a atteint la position X voulu
-      if((dogInfos->entity).positionX <= ENTITY_SIZE){
+      if((dogInfos->entity).positionX <= MAP_SIZE_X/10){
 
         //Ne plus bouger et passer au point suivant
         dogInfos->targetPositionX = (dogInfos->entity).positionX;
@@ -291,7 +292,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         (dogInfos->state)++;
 
       }else{//Si on a pas atteint la position
-        dogInfos->targetPositionX = (dogInfos->entity).positionX -10;//Vitesse de déplacment
+        dogInfos->targetPositionX = (dogInfos->entity).positionX -20;//Vitesse de déplacment
         dogInfos->targetPositionY = (dogInfos->entity).positionY;
       }
     }
@@ -350,7 +351,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     static int backPositionBeforeChaseX;
     static int backPositionBeforeChaseY;
     static int patternState;
-    static int isDogReady;
     static int backTargetedSheepX;
     static int backTargetedSheepY;
     static int attributionID;
@@ -379,9 +379,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         //Donner la direction de départ
         patternState = 3;
 
-        //Attendre que le chien soit prêt
-        isDogReady = 0;
-
       }
     }
 
@@ -390,7 +387,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       printf("Pattern State : %d\n",patternState);
     }
     //Si on est en recherche de brebis
-    if(dogInfos->state == 1 && isDogReady){
+    if(dogInfos->state == 1){
 
       //Chercher si une brebis est visible
       for(int i = 0;i<numberOfEntity;i++){
@@ -487,12 +484,12 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         if(entityAround[tmpIdSheep].positionY < MAP_SIZE_Y/2){
 
           dogInfos->targetPositionX = positionClamp(entityAround[tmpIdSheep].positionX,0);
-          dogInfos->targetPositionY = positionClamp(entityAround[tmpIdSheep].positionY - (dogInfos->actionRange) + 2,1);
+          dogInfos->targetPositionY = positionClamp(entityAround[tmpIdSheep].positionY - (dogInfos->actionRange) + 4,1);
 
         }else{//Si il est au dessous de la limite
 
           dogInfos->targetPositionX = positionClamp(entityAround[tmpIdSheep].positionX,0);
-          dogInfos->targetPositionY = positionClamp(entityAround[tmpIdSheep].positionY + (dogInfos->actionRange) - 2,1);
+          dogInfos->targetPositionY = positionClamp(entityAround[tmpIdSheep].positionY + (dogInfos->actionRange) - 4,1);
 
         }
       }else{//Si il est en position ou que qu'il a atteint le milieu
@@ -519,9 +516,6 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
         //Vider la sauvegarde de position
         backPositionBeforeChaseX = 0;
         backPositionBeforeChaseY = 0;
-
-        //Declarer le chien pret
-        isDogReady = 1;
       }
 
       //Mouvement vers le bas
@@ -567,7 +561,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       }
 
       //Si on ne bouge plus (on a parcouru la map)
-      if(backPositionX == (dogInfos->entity).positionX && backPositionY == (dogInfos->entity).positionY && isDogReady){
+      if(backPositionX == (dogInfos->entity).positionX && backPositionY == (dogInfos->entity).positionY){
         //Vider la sauvegarde de position
         backPositionBeforeChaseX = 0;
         backPositionBeforeChaseY = 0;
