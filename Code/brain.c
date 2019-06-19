@@ -271,7 +271,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
                   //Si c'est un bleu
                   if(strcmp(entityAround[i].nickname,"blue") == 0){
                     //Si il est à la bonne position
-                    if(entityAround[i].positionX >= MAP_SIZE_X-ENTITY_SIZE){
+                    if(entityAround[i].positionX >= MAP_SIZE_X-ENTITY_SIZE-50){
                       isBlueHere = 1;
                     }
                   }
@@ -619,7 +619,7 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
     if(dogInfos->state == 0){
 
       //Declarer le tableau
-      sheepSeen = malloc(sizeof(int)*5);
+      sheepSeen = malloc(sizeof(int)*10);
       sheepID = 0;
 
       //Passer en recherche
@@ -635,7 +635,16 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 
       //Si on a atteint le point
       if(isTargetPositionReached(dogInfos)){
-        dogInfos->state = 2;
+
+        //Si on a 5 brebis
+        if(sheepID >= 5){
+          //Appeller les verts
+          dogInfos->state = 3;
+        }else{
+          //Continuer le pattern
+          dogInfos->state = 2;
+        }
+
       }
     }
 
@@ -652,6 +661,62 @@ void computeStrategy(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
       }
     }
 
+    //Prevenir les verts puis recommencer si ils sont là
+    if(dogInfos->state == 3){
+
+      //Aller au point des verts
+      dogInfos->targetPositionX = MAP_SIZE_X-ENTITY_SIZE;
+      dogInfos->targetPositionY = MAP_SIZE_Y/2;
+
+      //Si les verts sont là
+      for(int i = 0;i<numberOfEntity;i++){
+        if(entityAround[i].nickname[0] == 'g' && entityAround[i].nickname[1] == 'r' && entityAround[i].nickname[2] == 'e' && entityAround[i].ID != (dogInfos->entity).ID){
+
+              //Si on est bien placé
+              if(isTargetPositionReached(dogInfos)){
+                sheepID = 0;
+                dogInfos->state = 1;
+              }
+        }
+      }
+
+    }
+
+    //Remplir le tableau si on trouve un nouveau sheep
+    if(dogInfos->state == 1 || dogInfos->state == 2){
+
+      //Pour toutes les entités présentes
+      for(int i = 0;i<numberOfEntity;i++){
+        //Si c'est un bot
+        if(strstr(entityAround[i].nickname,"bot") != NULL){
+          //Si il est au milieu
+          if(isPushingPositionReached(entityAround[i].positionX,entityAround[i].positionY,entityAround[i].positionX,MAP_SIZE_Y/2)){
+
+            int isInArray = 0;
+            //Verifier qu'il n'est pas déja dans le tableau
+            for(int j = 0;j<sheepID;j++){
+              if(entityAround[i].ID == sheepSeen[j]){
+                isInArray = 1;
+              }
+            }
+
+            //Si il n'est pas déjà dans le tableau
+            if(!isInArray){
+              sheepSeen[sheepID] = entityAround[i].ID;
+              sheepID++;
+            }
+
+          }
+        }
+      }
+    }
+
+    //DEBUG
+    for(int i = 0;i<10;i++){
+      printf("%d;",sheepSeen[i]);
+    }
+    printf("\n");
+    printf("Sheep ID : %d\n",sheepID);
 
   }
 }
