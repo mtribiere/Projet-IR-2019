@@ -279,7 +279,7 @@ void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity
             // Partir ailleurs
             dogInfos->targetPositionX = generatePositionAroundBaseX(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
             dogInfos->targetPositionY = generatePositionAroundBaseY(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
-          }
+          
         }
       }
     }
