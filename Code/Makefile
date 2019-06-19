@@ -37,6 +37,9 @@ duo : sock
 
 local: sock
 	./sock -V -p 1443 -o agar.io 127.0.0.1
+	
+affiche-local: spectacle
+	./spectacle -s -p 1443 127.0.0.1
 
 multi-local: sock
 	./sock -p 1443 -o agar.io 127.0.0.1
