@@ -22,4 +22,8 @@ int isPushingPositionReached(int positionX,int positionY,int targetPositionX,int
 int isTargetPositionReached(Dog *dogInfos);
 int generateRandomPosition(int lower,int upper);
 
+int Target_X_Backup;
+int Target_Y_Backup;
+int MateID;
+
 #endif
