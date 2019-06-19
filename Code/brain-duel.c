@@ -88,6 +88,9 @@ int isInBase(int positionX,int positionY){
 ****************************/
 void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 {
+  if ((dogInfos->dogType == 2) || (dogInfos->dogType == 3)) {
+
+     //Infiltration vers l'enclos adverse
         if(dogInfos->state == 0){
 
           //Aller au meetPoint
@@ -120,6 +123,7 @@ void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity
           //Contournement terminé => Go réinitialisation
           if (isTargetPositionReached(dogInfos))  dogInfos->state = 0;
         }
+      }
 
 
     // Faire un état initial où les jaunes vont au-dessus de l'enclos adverse
