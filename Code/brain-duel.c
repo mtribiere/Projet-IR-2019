@@ -88,47 +88,49 @@ int isInBase(int positionX,int positionY){
 ****************************/
 void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity)
 {
+
   if ((dogInfos->dogType == 2) || (dogInfos->dogType == 3)) {
 
-     //Infiltration vers l'enclos adverse
-        if(dogInfos->state == 0){
+    //Infiltration vers l'enclos adverse
+    if(dogInfos->state == 0){
 
           //Aller au meetPoint
-          if(BASE_SIDE == 1) dogInfos->targetPositionX = positionClamp((1.05*(dogInfos->actionRange)),0);
-          if(BASE_SIDE == 2) dogInfos->targetPositionX = positionClamp((MAP_SIZE_X - 1.05*(dogInfos->actionRange)),0);
+          if(BASE_SIDE == 2) dogInfos->targetPositionX = positionClamp((1.05*(dogInfos->actionRange)),0);
+          if(BASE_SIDE == 1) dogInfos->targetPositionX = positionClamp((MAP_SIZE_X - 1.05*(dogInfos->actionRange)),0);
           dogInfos->targetPositionY = MAP_SIZE_Y/2 - MAP_SIZE_X/10;
 
           //meetPoint atteint
           if (isTargetPositionReached(dogInfos))  dogInfos->state = 1;
         }
-
-        if(dogInfos->state == 1){
+    if(dogInfos->state == 1){
 
           //Balayage
-          if(BASE_SIDE == 1) dogInfos->targetPositionX = positionClamp((1.05*(dogInfos->actionRange)),0);
-          if(BASE_SIDE == 2) dogInfos->targetPositionX = positionClamp((MAP_SIZE_X - 1.05*(dogInfos->actionRange)),0);
+          if(BASE_SIDE == 2) dogInfos->targetPositionX = positionClamp((1.05*(dogInfos->actionRange)),0);
+          if(BASE_SIDE == 1) dogInfos->targetPositionX = positionClamp((MAP_SIZE_X - 1.05*(dogInfos->actionRange)),0);
           dogInfos->targetPositionY = MAP_SIZE_Y/2 + MAP_SIZE_X/10;
 
           //Balayage terminé
-          if (isTargetPositionReached(dogInfos))  dogInfos->state = 2;
-        }
+          if (isTargetPositionReached(dogInfos)){
+            for (int i, i < numberOfEntity, i++){
+              if (entityAround[i].nickname[0] == 'g') {
+                if (entityAround[i].positionY <= MAP_SIZE_Y/2 + MAP_SIZE_X/10 + POSITION_MARGIN) && (entityAround[i].positionY <= MAP_SIZE_Y/2 + MAP_SIZE_X/10 - POSITION_MARGIN){
+                  dogInfos->state = 2;
+                }
+              }
+            }
+          }
 
-        if(dogInfos->state == 2) {
+      if(dogInfos->state == 2) {
 
           //Contourner l'enclos
-          if(BASE_SIDE == 1) dogInfos->targetPositionX = MAP_SIZE_X/10;
-          if(BASE_SIDE == 2) dogInfos->targetPositionX = MAP_SIZE_X * (9/10);
+          if(BASE_SIDE == 2) dogInfos->targetPositionX = MAP_SIZE_X/10;
+          if(BASE_SIDE == 1) dogInfos->targetPositionX = MAP_SIZE_X * (9/10);
           dogInfos->targetPositionY = MAP_SIZE_Y/2;
 
           //Contournement terminé => Go réinitialisation
           if (isTargetPositionReached(dogInfos))  dogInfos->state = 0;
         }
       }
-
-
-    // Faire un état initial où les jaunes vont au-dessus de l'enclos adverse
-    // Changer le generateRandomPosition pour le limiter à une certaine zone au-dessus de l'enclos adverse : generatePositionAroundBase
-
 
     // Si c'est un chien jaune
     if(dogInfos->dogType == 5){
@@ -279,10 +281,9 @@ void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity
             // Partir ailleurs
             dogInfos->targetPositionX = generatePositionAroundBaseX(ENTITY_SIZE,MAP_SIZE_X-ENTITY_SIZE);
             dogInfos->targetPositionY = generatePositionAroundBaseY(ENTITY_SIZE,MAP_SIZE_Y-ENTITY_SIZE);
-          
+          }
         }
       }
     }
    }
  }
-}
