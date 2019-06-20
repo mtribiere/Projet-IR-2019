@@ -7,7 +7,7 @@
 
 #define TIME_UNTIL_SYNCH 15
 #define PUSHING_FORCE 20
-#define BASE_SIDE 1
+#define BASE_SIDE 2
 /********
 \ 1 : Base a gauche
 \ 2 : Base a droite
