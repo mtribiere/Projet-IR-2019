@@ -193,7 +193,8 @@ static int callbackOgar(struct lws *wsi, enum lws_callback_reasons reason, void 
 
 		sendCommand(wsi,connectionStart1,sizeof(connectionStart1));
 		sendCommand(wsi,connectionStart2,sizeof(connectionStart2));
-		sendCommand(wsi,colorPackets[dogInfos.dogType],sizeOfColorPackets[dogInfos.dogType]);
+		if(BASE_SIDE == 1) sendCommand(wsi,colorPackets1[dogInfos.dogType],sizeOfColorPackets[dogInfos.dogType]);
+		if(BASE_SIDE == 2) sendCommand(wsi,colorPackets2[dogInfos.dogType],sizeOfColorPackets[dogInfos.dogType]);
 		break;
 
  	case LWS_CALLBACK_CLIENT_WRITEABLE:
@@ -342,7 +343,8 @@ int main(int argc, char **argv)
 
 
 	//Initialisation des variables dependantes du type de chien
-	dogInfos.entity.nickname = nicknames[dogInfos.dogType];
+	if(BASE_SIDE == 1) dogInfos.entity.nickname = nicknames1[dogInfos.dogType];
+	if(BASE_SIDE == 2) dogInfos.entity.nickname = nicknames2[dogInfos.dogType];
 	dogInfos.actionRange = actionRanges[dogInfos.dogType];
 
 
