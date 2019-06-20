@@ -139,8 +139,8 @@ if(dogInfos->state == 0){
   MateID = -1;
 
   //Aller au meetPoint
-  if(BASE_SIDE == 2) dogInfos->targetPositionX = MAP_SIZE_X/30;
-  if(BASE_SIDE == 1) dogInfos->targetPositionX = MAP_SIZE_X - (MAP_SIZE_X/30);
+  if(BASE_SIDE == 2) dogInfos->targetPositionX = ENTITY_SIZE + (dogInfos->actionRange);
+  if(BASE_SIDE == 1) dogInfos->targetPositionX = MAP_SIZE_X - (ENTITY_SIZE + (dogInfos->actionRange));
   dogInfos->targetPositionY = MAP_SIZE_Y/2 - MAP_SIZE_X/10;
 
 /*    if ((isTargetPositionReached(dogInfos)) && ((time(NULL) - (dogInfos->timer)) >= (TIME_UNTIL_SYNCH_CYAN))){
@@ -214,7 +214,7 @@ if(dogInfos->state == 0){
 
   if(((isTargetPositionReached(dogInfos)) && ((dogInfos->state == 40) || (dogInfos->state == 41)))) {
     if(BASE_SIDE == 2) dogInfos->targetPositionX = positionClamp(MAP_SIZE_X/10,0);
-    if(BASE_SIDE == 1) dogInfos->targetPositionX = positionClamp(MAP_SIZE_X*(9/10),0);
+    if(BASE_SIDE == 1) dogInfos->targetPositionX = positionClamp(MAP_SIZE_X - MAP_SIZE_X/10,0);
     dogInfos->targetPositionY = MAP_SIZE_Y/2;
     dogInfos->state = 50;
     printf("Pushing finished\n");
