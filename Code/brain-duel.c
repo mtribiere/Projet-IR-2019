@@ -91,7 +91,7 @@ void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity
 
   if ((dogInfos->dogType == 2) || (dogInfos->dogType == 3)) {
 
-  /*  //Infiltration vers l'enclos adverse
+    //Infiltration vers l'enclos adverse
     if(dogInfos->state == 0){
 
           //Aller au meetPoint
@@ -129,101 +129,8 @@ void computeStrategyDuel(Dog *dogInfos, Entity *entityAround, int numberOfEntity
           //Contournement terminé => Go réinitialisation
           if (isTargetPositionReached(dogInfos))  dogInfos->state = 0;
         }
-      } */
-      int Dog_X = (dogInfos->entity).positionX;
-      int Dog_Y = (dogInfos->entity).positionY;
-
-//Infiltration vers l'enclos adverse
-if(dogInfos->state == 0){
-
-  MateID = -1;
-
-  //Aller au meetPoint
-  if(BASE_SIDE == 2) dogInfos->targetPositionX = ENTITY_SIZE + (dogInfos->actionRange);
-  if(BASE_SIDE == 1) dogInfos->targetPositionX = MAP_SIZE_X - (ENTITY_SIZE + (dogInfos->actionRange));
-  dogInfos->targetPositionY = MAP_SIZE_Y/2 - MAP_SIZE_X/10;
-
-/*    if ((isTargetPositionReached(dogInfos)) && ((time(NULL) - (dogInfos->timer)) >= (TIME_UNTIL_SYNCH_CYAN))){
-    dogInfos->state = 10;
-    printf("Dog state = 1\n");
-  } */
-
-  //Check de mate Red/Cyan avec nous...
-  for (int i = 0; i < numberOfEntity; i++){
-    if((entityAround[i].nickname[0] == 'c' && entityAround[i].nickname[1] == 'y' && (entityAround[i].nickname[2] == 'a') && (dogInfos->entity).ID != entityAround[i].ID)) {
-      MateID = entityAround[i].ID;
-    }
-  }
-  if (MateID != -1) {
-    if (MateID >= (dogInfos->entity).ID) {
-      dogInfos->state = 20;
-    }
-    if (MateID < (dogInfos->entity).ID) {
-      dogInfos->state = 21;
-    }
-    printf("DUAL MODE ACTIVATED\n");
-  }
-}
-
-  // Pour le balayage des cyans
-  if (dogInfos->state == 20){
-
-    int IDofMATE = findIdOfSheep(entityAround,numberOfEntity,MateID);
-    printf("\n\nMateID = %d\nIDofMATE = %d\n", MateID,IDofMATE);
-    int MarginDOG_X = Dog_X - entityAround[IDofMATE].positionX;
-    int MarginDOG_Y = Dog_Y - entityAround[IDofMATE].positionY;
-    printf("MARGIN : X = %d | Y = %d\n",MarginDOG_X,MarginDOG_Y);
-
-    if (((sqrt((MarginDOG_X)*(MarginDOG_X)) <= POSITION_MARGIN) && (sqrt((MarginDOG_Y)*(MarginDOG_Y)) <= POSITION_MARGIN)) && isTargetPositionReached(dogInfos)){
-      printf("On initialise ?\n");
-      dogInfos->targetPositionX =  positionClamp(Dog_X - (dogInfos->actionRange)/2,0);
-      dogInfos->targetPositionY = Dog_Y;
-      dogInfos->state = 30;
-    }
-  }
-
-  if (dogInfos->state == 21){
-
-    int IDofMATE = findIdOfSheep(entityAround,numberOfEntity,MateID);
-    printf("\n\nMateID = %d\nIDofMATE = %d\n", MateID,IDofMATE);
-    int MarginDOG_X = Dog_X - entityAround[IDofMATE].positionX;
-    int MarginDOG_Y = Dog_Y - entityAround[IDofMATE].positionY;
-    printf("MARGIN : X = %d | Y = %d\n",MarginDOG_X,MarginDOG_Y);
-
-    if (((sqrt((MarginDOG_X)*(MarginDOG_X)) <= POSITION_MARGIN) && (sqrt((MarginDOG_Y)*(MarginDOG_Y)) <= POSITION_MARGIN)) && isTargetPositionReached(dogInfos)){
-      printf("On initialise ?\n");
-      dogInfos->targetPositionX = positionClamp(Dog_X + (dogInfos->actionRange)/2,0);
-      dogInfos->targetPositionY = Dog_Y;
-      dogInfos->state = 31;
-    }
-  }
-
-  if((dogInfos->state == 30) && (isTargetPositionReached(dogInfos))){
-    dogInfos->targetPositionX = positionClamp(Dog_X,0);
-    dogInfos->targetPositionY = MAP_SIZE_Y/2 + MAP_SIZE_X/10;
-    dogInfos->state = 40;
-    printf("Pushing phase\n");
-  }
-
-  if((dogInfos->state == 31) && (isTargetPositionReached(dogInfos))){
-    dogInfos->targetPositionX = positionClamp(Dog_X,0);
-    dogInfos->targetPositionY = MAP_SIZE_Y/2 + MAP_SIZE_X/10;
-    dogInfos->state = 41;
-    printf("Pushing phase\n");
-  }
-
-  if(((isTargetPositionReached(dogInfos)) && ((dogInfos->state == 40) || (dogInfos->state == 41)))) {
-    if(BASE_SIDE == 2) dogInfos->targetPositionX = positionClamp(MAP_SIZE_X/10,0);
-    if(BASE_SIDE == 1) dogInfos->targetPositionX = positionClamp(MAP_SIZE_X - MAP_SIZE_X/10,0);
-    dogInfos->targetPositionY = MAP_SIZE_Y/2;
-    dogInfos->state = 50;
-    printf("Pushing finished\n");
-  }
-
-  if((dogInfos->state == 50) && (isTargetPositionReached(dogInfos))){
-    dogInfos->state = 0;
-    printf("Rabattement terminé\n");
-  }
+      } 
+      
 }
 
 
